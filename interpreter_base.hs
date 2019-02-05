@@ -50,7 +50,7 @@ type Store = [(Var, Val)]
 
 -- Note that if the store contains multiple bindings for a variable, 
 --lookup selects the bindings that comes first in the store.
-{-
+
 eval :: Exp -> Store -> Val
 eval (C n) r       = n
 eval (V x) r       = case lookup x r of
@@ -60,27 +60,27 @@ eval (e1 :+: e2) r = eval e1 r + eval e2 r
 eval (e1 :-: e2) r = eval e1 r - eval e2 r
 eval (e1 :*: e2) r = eval e1 r * eval e2 r
 eval (e1 :/: e2) r = eval e1 r `div` eval e2 r
--}
+
 -- While the evaluation of an expression cannot alter the contents of the store, executing a statement may in fact result in an update of the store. Hence,
 -- the function for executing a statement takes a store as an argument and produces a possibly updated store.
 
 -- Note that, in the case of assignments, we simply push a new binding for the updated variable to the store,
 -- effectively shadowing any previous bindings for that variable.
-{-
+
 exec :: Stmt -> Store -> Store
 exec (x := e) r                    = (x, eval e r) : r
 exec (While e s) r | eval e r /= 0 = exec (Seq [s, While e s]) r
                    | otherwise     = r
 exec (Seq []) r                    = r
 exec (Seq (s : ss)) r              = exec (Seq ss) (exec s r)
--}
+
 --Running a program reduces to executing its top-level statement in the context of an initial store.
 --After executing the statement we clean up any shadowed bindings,
 --so that we can easily read off the contents of the final store.
-{-
+
 run :: Prog -> Store -> Store
 run p r = nubBy ((==) `on` fst) (exec p r)
--}
+
 --As an example, consider the following program that computes the Fibonacci number 
 --of the number stored in the variable n and stores its result in the variable x.
 
@@ -99,7 +99,7 @@ fib = Seq
 
 --We can use monad transformers to construct a composite monad for our two effects by combining a basic state monad and a basic error monad.
 --Here, however, we simply construct the composite monad in one go.
-
+{-
 newtype Interp a = Interp { runInterp :: Store -> Either String (a, Store) }
 
 instance Monad Interp where
@@ -109,20 +109,20 @@ instance Monad Interp where
                Right (x, r') -> runInterp (k x) r'
   fail msg = Interp $ \_ -> Left msg
 
-
+-}
 --to the imports and make Interp an instance of Functor and Applicative like this
-
+{-
 instance Functor Interp where
   fmap = liftM -- imported from Control.Monad
 
 instance Applicative Interp where
   pure  = return
   (<*>) = ap -- imported from Control.Monad
-
+-}
 
 --For reading from and writing to the store, we introduce effectful functions rd and wr:
 --Note that rd produces a Left-wrapped error message if a variable lookup fails.
-
+{-
 rd :: Var -> Interp Val
 rd x = Interp $ \r -> case lookup x r of
          Nothing -> Left ("unbound variable `" ++ x ++ "'")
@@ -130,11 +130,11 @@ rd x = Interp $ \r -> case lookup x r of
 
 wr :: Var -> Val -> Interp ()
 wr x v = Interp $ \r -> Right ((), (x, v) : r)
-
+-}
 
 --Note that rd produces a Left-wrapped error message if a variable lookup fails.
 --The monadic version of the expression evaluator now reads
-
+{-
 eval :: Exp -> Interp Val
 eval (C n)       = do return n
 eval (V x)       = do rd x
@@ -152,12 +152,12 @@ eval (e1 :/: e2) = do v1 <- eval e1
                       if v2 == 0
                         then fail "division by zero"
                         else return (v1 `div` v2)
-
+-}
 
 --For the execution of statements we have
 --The type of exec conveys that statements do not result in values but are executed only 
 --for their effects on the store or the run-time errors they may trigger.
-
+{-
 exec :: Stmt -> Interp ()
 exec (x := e)       = do v <- eval e
                          wr x v
@@ -166,10 +166,11 @@ exec (While e s)    = do v <- eval e
 exec (Seq [])       = do return ()
 exec (Seq (s : ss)) = do exec s
                          exec (Seq ss)
-
+-}
 --Finally, in the function run we perform a monadic computation and process its effects.
-
+{-
 run :: Prog -> Store -> Either String Store
 run p r = case runInterp (exec p) r of
             Left msg      -> Left msg
             Right (_, r') -> Right (nubBy ((==) `on` fst) r')
+-}            

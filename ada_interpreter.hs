@@ -115,6 +115,7 @@ exec (Seq (s : ss)) r = exec (Seq ss) (exec s r)
 --and that invokes only the function exec.
 run :: Prog -> Store -> Store
 run p r = exec p r
+
 --Combining the function see and function run You can run a program and see, of a variable
 --of interest, its value in memory.
 
