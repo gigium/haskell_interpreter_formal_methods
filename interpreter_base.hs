@@ -1,51 +1,35 @@
 import Data.Function
 import Data.List
-import Control.Monad
-import Control.Applicative -- Otherwise you can't do the Applicative instance.
 
 --The essence of an imperative language is that it has some form of mutable variables.
 --Here, variables simply represented by strings:
 
 type Var = String
 
---Next, we define ArithmeticAexpressions.
+--Next, we define ArithmeticExpressions.
 --Expressions are constructed from integer constants, variable references, and arithmetic operations.
 
 
 infix 1 `IS`
 infixl 6 `SUM`, `DIF`
 infixl 7 `MUL`, `DIV`
-infixl 8 `AND`, `OR`, `Not`
-infixl 9 `EQUAL`, `NOT_EQUAL`, `LESS_THAN`, `GREATER_THAN`,`GREATER_EQUAL_TO`, `LESS_EQUAL_TO`
 
-data ArithmeticAexp
+
+data ArithmeticExp
   = C Int        -- constant                                                     
   | V Var        -- variable                                                     
-  | ArithmeticAexp `SUM` ArithmeticAexp  -- addition                                                     
-  | ArithmeticAexp `DIF` ArithmeticAexp  -- subtraction                                                  
-  | ArithmeticAexp `MUL` ArithmeticAexp  -- multiplication                                               
-  | ArithmeticAexp `DIV` ArithmeticAexp  -- division
-
-data BooleanAexp = Boolean Bool -- Constant
- | B Var -- Variable
- | BooleanAexp `AND` BooleanAexp -- Logic and
- | BooleanAexp `OR` BooleanAexp -- Logic or
- | Not BooleanAexp -- Negation
- |ArithmeticAexp `EQUAL` ArithmeticAexp -- Equality between twoArithmeticAexp
- |ArithmeticAexp `NOT_EQUAL` ArithmeticAexp --Inequality between two Axp
--- Comparison amongArithmeticAexp
- |ArithmeticAexp `LESS_THAN` ArithmeticAexp
- |ArithmeticAexp `GREATER_THAN` ArithmeticAexp
- |ArithmeticAexp `GREATER_EQUAL_TO` ArithmeticAexp
- |ArithmeticAexp `LESS_EQUAL_TO` ArithmeticAexp
+  | SUM [ArithmeticExp]  [ArithmeticExp]  -- addition                                                     
+  | DIF [ArithmeticExp]  [ArithmeticExp]  -- subtraction                                                  
+  | MUL [ArithmeticExp]  [ArithmeticExp]  -- multiplication                                               
+  | DIV [ArithmeticExp]  [ArithmeticExp]  -- division
 
   --The statement language is rather minimal.
   --We have three forms of statements: variable assignments, while loops, and sequences.
 
 
 data Stmt
-  = Var `IS` ArithmeticAexp      -- assignment                                                
-  | While ArithmeticAexp Stmt  -- loop                                                      
+  = Var `IS` ArithmeticExp      -- assignment                                                
+  | While ArithmeticExp Stmt  -- loop                                                      
   | Seq [Stmt]      -- sequence
 
 
@@ -66,17 +50,17 @@ type Store = [(Var, Val)]
 -- Note that if the store contains multiple bindings for a variable, 
 --lookup selects the bindings that comes first in the store.
 
-eval :: ArithmeticAexp -> Store -> Val
+eval :: ArithmeticExp -> Store -> Val
 eval (C n) r       = n
 eval (V x) r       = case lookup x r of
                        Nothing -> error ("unbound variable `" ++ x ++ "'")
                        Just v  -> v
-eval (e1 `SUM` e2) r = eval e1 r + eval e2 r
-eval (e1 `DIF` e2) r = eval e1 r - eval e2 r
-eval (e1 `MUL` e2) r = eval e1 r * eval e2 r
-eval (e1 `DIV` e2) r = eval e1 r `div` eval e2 r
+eval (SUM [e1]  [e2]) r = eval e1 r + eval e2 r
+eval (DIF [e1]  [e2]) r = eval e1 r - eval e2 r
+eval (MUL [e1]  [e2]) r = eval e1 r * eval e2 r
+eval (DIV [e1]  [e2]) r = eval e1 r `div` eval e2 r
 
--- While the evaluation of an ArithmeticAexpression cannot alter the contents of the store, executing a statement may in fact result in an update of the store. Hence,
+-- While the evaluation of an ArithmeticExpression cannot alter the contents of the store, executing a statement may in fact result in an update of the store. Hence,
 -- the function for executing a statement takes a store as an argument and produces a possibly updated store.
 
 -- Note that, in the case of assignments, we simply push a new binding for the updated variable to the store,
@@ -104,10 +88,10 @@ fib = Seq
   [ "x" `IS` C 0
   , "y" `IS` C 1
   , While (V "n") $ Seq
-      [ "z" `IS` V "x" `SUM` V "y"
+      [ "z" `IS` SUM [V "x"]  [V "y"]
       , "x" `IS` V "y"
       , "y" `IS` V "z"
-      , "n" `IS` V "n" `DIF` C 1
+      , "n" `IS` DIF [V "n"]  [C 1]
       ]
   ]
 
