@@ -113,3 +113,87 @@ ifKeyword :: String -> [Token]
 ifKeyword cs = case stripPrefix "F" cs of
                  Just restOfString -> TokOp (If) : tokenize restOfString
                  Nothing -> error $ "Cannot tokenize [IF not recognized]"
+
+--parser
+
+data Expr = ConditionalNode Operator Expr Expr
+          | SeqNode [Expr]
+          | CommandNode Expr 
+          | LogicNode Operator Expr Expr
+          | AssignBoolNode String Expr
+          | BoolVarNode String
+          | BoolNode Bool
+          | UnaryBoolNode Operator Expr
+    deriving Show          
+
+
+lookAhead :: [Token] -> Token
+lookAhead [] = TokEnd
+lookAhead (t:ts) = t
+
+accept :: [Token] -> [Token]
+accept [] = error "Nothing to accept"
+accept (t:ts) = ts
+
+
+
+sqnc :: ([Token], [Expr]) -> (Expr, [Token])
+sqnc (toks, expr_array) = 
+  case lookAhead toks of
+    TokSeqStart -> sqnc(accept toks, expr_array)
+    TokSeqFinish -> (SeqNode expr_array, accept toks)
+    _ ->
+       let (commandTree, toks') = command toks 
+       in
+          case lookAhead toks' of
+              TokStmEnd -> sqnc(accept toks', expr_array++[commandTree])
+
+
+
+
+command :: [Token] -> (Expr, [Token])
+command toks = 
+    let (expTree, toks') = expression(toks) 
+      in case lookAhead toks'  of
+        TokStmEnd -> (CommandNode expTree, toks')
+        _ -> (expTree,  toks')
+
+
+
+
+expression :: [Token] -> (Expr, [Token])
+expression toks = 
+   let (termTree, toks') = b_term toks
+   in
+      case lookAhead toks' of
+         (TokOp op) | elem op [And, Or, Not] -> 
+            let (exTree, toks'') = expression (accept toks') 
+            in (LogicNode op termTree exTree, toks'')
+         (TokOp op) | elem op [Greater, GreaterEqual, Less, LessEqual, Equal, NotEqual] -> 
+            let (exTree, toks'') = expression (accept toks') 
+            in (LogicNode op termTree exTree, toks'')
+         TokAssign ->
+            case termTree of
+               BoolVarNode str -> 
+                  let (exTree, toks'') = expression (accept toks') 
+                  in (AssignBoolNode str exTree, toks'')
+               _ -> error "Only variables can be assigned to"
+         _ -> (termTree, toks')
+
+
+
+b_term :: [Token] -> (Expr, [Token])
+b_term toks = 
+   case lookAhead toks of
+      (TokBool x)     -> (BoolNode x, accept toks)
+      (TokIdent str) -> (BoolVarNode str, accept toks)
+      (TokOp op) | elem op [Not] -> 
+            let (facTree, toks') = b_term (accept toks) 
+            in (UnaryBoolNode op facTree, toks')
+      TokLParen      -> 
+         let (expTree, toks') = expression (accept toks)
+         in
+            if lookAhead toks' /= TokRParen 
+            then error "Missing right parenthesis"
+            else (expTree, accept toks')
+      _ -> error $ "Parse error on token: " ++ show toks
