@@ -120,16 +120,24 @@ data Expr = ConditionalNode Operator Expr Expr
           | SeqNode [Expr]
           | CommandNode Expr 
           | LogicNode Operator Expr Expr
+          | ArithmeticLogicNode Operator Expr Expr
           | AssignBoolNode String Expr
           | BoolVarNode String
           | BoolNode Bool
           | UnaryBoolNode Operator Expr
+          | SumNode Operator Expr Expr
+          | ProdNode Operator Expr Expr
+          | AssignNode String Expr
+          | UnaryNode Operator Expr
+          | NumNode Double
+          | VarNode String
     deriving Show          
 
 
 lookAhead :: [Token] -> Token
 lookAhead [] = TokEnd
 lookAhead (t:ts) = t
+
 
 accept :: [Token] -> [Token]
 accept [] = error "Nothing to accept"
@@ -147,7 +155,7 @@ sqnc (toks, expr_array) =
        in
           case lookAhead toks' of
               TokStmEnd -> sqnc(accept toks', expr_array++[commandTree])
-
+              _ -> error $ "error on token: " ++ show toks'
 
 
 
@@ -163,23 +171,62 @@ command toks =
 
 expression :: [Token] -> (Expr, [Token])
 expression toks = 
-   let (termTree, toks') = b_term toks
+   let (termTree, toks') = term toks
    in
       case lookAhead toks' of
          (TokOp op) | elem op [And, Or, Not] -> 
             let (exTree, toks'') = expression (accept toks') 
             in (LogicNode op termTree exTree, toks'')
-         (TokOp op) | elem op [Greater, GreaterEqual, Less, LessEqual, Equal, NotEqual] -> 
+         (TokOp op) | elem op [Greater, GreaterEqual, Less, LessEqual, Equal, NotEqual ] -> 
             let (exTree, toks'') = expression (accept toks') 
-            in (LogicNode op termTree exTree, toks'')
+            in (ArithmeticLogicNode op termTree exTree, toks'')
+         (TokOp op) | elem op [Plus, Minus] -> 
+            let (exTree, toks'') = expression (accept toks') 
+            in (SumNode op termTree exTree, toks'')
          TokAssign ->
             case termTree of
                BoolVarNode str -> 
                   let (exTree, toks'') = expression (accept toks') 
                   in (AssignBoolNode str exTree, toks'')
+               VarNode str -> 
+                  let (exTree, toks'') = expression (accept toks') 
+                  in (AssignNode str exTree, toks'')
                _ -> error "Only variables can be assigned to"
          _ -> (termTree, toks')
 
+
+
+term :: [Token] -> (Expr, [Token])
+term toks = 
+    case lookAhead toks of
+      TokNum n -> a_term(toks)
+      TokBool b -> b_term(toks)
+      (TokOp op) | elem op [While, If] ->
+        let (condTree, seqTree, toks') = c_term(accept toks)
+        in 
+          (ConditionalNode op condTree seqTree, toks')
+      (TokOp op) | elem op [Not] -> b_term(toks)
+      (TokOp op) | elem op [Plus, Minus] -> a_term(toks)
+      _ -> error $ " " ++ show toks
+
+
+
+c_term :: [Token] -> (Expr, Expr, [Token])
+c_term toks = 
+    case lookAhead toks of
+    TokCondStart      -> 
+       let (expTree, toks') = expression (accept toks)
+       in
+          if lookAhead toks' /= TokCondFinish 
+          then error "Missing ]"
+          else let toks'' = accept toks' 
+            in 
+              case lookAhead toks'' of
+                TokSeqStart -> 
+                  let (seqTree, toks_r) = sqnc(toks'', [])
+                  in
+                    (expTree, seqTree, toks_r)
+    _ -> error $"Error !CONDSTART " ++ (show . accept) toks
 
 
 b_term :: [Token] -> (Expr, [Token])
@@ -190,6 +237,35 @@ b_term toks =
       (TokOp op) | elem op [Not] -> 
             let (facTree, toks') = b_term (accept toks) 
             in (UnaryBoolNode op facTree, toks')
+      TokLParen      -> 
+         let (expTree, toks') = expression (accept toks)
+         in
+            if lookAhead toks' /= TokRParen 
+            then error "Missing right parenthesis"
+            else (expTree, accept toks')
+      _ -> error $ "Parse error on token: " ++ show toks
+
+
+
+a_term :: [Token] -> (Expr, [Token])
+a_term toks = 
+   let (facTree, toks') = a_factor toks
+   in
+      case lookAhead toks' of
+         (TokOp op) | elem op [Times, Div] ->
+            let (termTree, toks'') = a_term (accept toks') 
+            in (ProdNode op facTree termTree, toks'')
+         _ -> (facTree, toks')
+
+
+a_factor :: [Token] -> (Expr, [Token])
+a_factor toks = 
+   case lookAhead toks of
+      (TokNum x)     -> (NumNode x, accept toks)
+      (TokIdent str) -> (VarNode str, accept toks)
+      (TokOp op) | elem op [Plus, Minus] -> 
+            let (facTree, toks') = a_factor (accept toks) 
+            in (UnaryNode op facTree, toks')
       TokLParen      -> 
          let (expTree, toks') = expression (accept toks)
          in
