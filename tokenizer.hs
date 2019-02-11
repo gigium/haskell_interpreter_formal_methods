@@ -114,23 +114,22 @@ ifKeyword cs = case stripPrefix "F" cs of
                  Just restOfString -> TokOp (If) : tokenize restOfString
                  Nothing -> error $ "Cannot tokenize [IF not recognized]"
 
---parser
+--parser--
 
 data Expr = ConditionalNode Operator Expr Expr
           | SeqNode [Expr]
+          | AssignNode String Expr
+          | VarNode String
           | CommandNode Expr 
           | LogicNode Operator Expr Expr
           | ArithmeticLogicNode Operator Expr Expr
-          | AssignBoolNode String Expr
-          | BoolVarNode String
           | BoolNode Bool
+          | BoolVarNode String
           | UnaryBoolNode Operator Expr
           | SumNode Operator Expr Expr
           | ProdNode Operator Expr Expr
-          | AssignNode String Expr
           | UnaryNode Operator Expr
           | NumNode Double
-          | VarNode String
     deriving Show          
 
 
@@ -185,9 +184,6 @@ expression toks =
             in (SumNode op termTree exTree, toks'')
          TokAssign ->
             case termTree of
-               BoolVarNode str -> 
-                  let (exTree, toks'') = expression (accept toks') 
-                  in (AssignBoolNode str exTree, toks'')
                VarNode str -> 
                   let (exTree, toks'') = expression (accept toks') 
                   in (AssignNode str exTree, toks'')
@@ -218,7 +214,7 @@ c_term toks =
        let (expTree, toks') = expression (accept toks)
        in
           if lookAhead toks' /= TokCondFinish 
-          then error "Missing ]"
+          then error $ "Missing ] in " ++ show toks'
           else let toks'' = accept toks' 
             in 
               case lookAhead toks'' of
@@ -273,3 +269,116 @@ a_factor toks =
             then error "Missing right parenthesis"
             else (expTree, accept toks')
       _ -> error $ "Parse error on token: " ++ show toks
+
+
+--evaluating--
+
+type Store = [(String, String)]
+
+see :: (Eq a) => a -> [(a,b)] -> Maybe b
+see _key [] = Nothing
+see key ((x,y):xys)
+ | key == x = Just y
+ | otherwise = see key xys
+
+
+execute :: Expr -> Store -> Store
+execute (SeqNode []) r = r
+execute (SeqNode (s : ss)) r =  execute (SeqNode ss) (execute s r)
+execute (CommandNode e) r = let d = evaluate e r in r
+
+
+
+evaluate :: Expr -> Store -> Store
+evaluate (AssignNode s e) r = (s, show (evaluate e r)) : r
+evaluate (ConditionalNode If b st) r | b_evaluate b r /= False = evaluate st r
+evaluate (ConditionalNode While b s) r | b_evaluate b r /= False = execute (SeqNode [s,ConditionalNode While b s]) r
+ | otherwise = r
+--arithmetic
+evaluate (NumNode n) r = 
+  let  d = a_evaluate (NumNode n) r in r
+evaluate (SumNode Plus e1 e2) r = 
+  let  d = a_evaluate (SumNode Plus e1 e2) r in r
+evaluate (SumNode Minus e1 e2) r = 
+  let  d = a_evaluate (SumNode Minus e1 e2) r in r
+evaluate (UnaryNode Plus e1) r = 
+  let  d = a_evaluate (UnaryNode Plus e1) r in r
+evaluate (UnaryNode Minus e1) r = 
+  let  d = a_evaluate (UnaryNode Minus e1) r in r
+evaluate (ProdNode Times e1 e2) r = 
+  let  d = a_evaluate (ProdNode Times e1 e2) r in r
+evaluate (ProdNode Div e1 e2) r = 
+  let  d = a_evaluate (ProdNode Div e1 e2) r in r
+
+--bool
+evaluate (BoolNode b) r = 
+  let  d = b_evaluate (BoolNode b) r in r
+
+evaluate (LogicNode And e1 e2) r = 
+  let  d = b_evaluate (LogicNode And e1 e2) r in r
+evaluate (LogicNode Or e1 e2) r = 
+  let  d = b_evaluate (LogicNode Or e1 e2) r in r
+evaluate (UnaryBoolNode Not e1) r = 
+  let  d = b_evaluate (UnaryBoolNode Not e1) r in r
+
+evaluate (ArithmeticLogicNode Greater e1 e2) r = 
+  let  d = b_evaluate (ArithmeticLogicNode Greater e1 e2) r in r
+evaluate (ArithmeticLogicNode GreaterEqual e1 e2) r = 
+  let  d = b_evaluate (ArithmeticLogicNode GreaterEqual e1 e2) r in r
+evaluate (ArithmeticLogicNode Less e1 e2) r = 
+  let  d = b_evaluate (ArithmeticLogicNode Less e1 e2) r in r
+evaluate (ArithmeticLogicNode LessEqual e1 e2) r = 
+  let  d = b_evaluate (ArithmeticLogicNode LessEqual e1 e2) r in r
+evaluate (ArithmeticLogicNode Equal e1 e2) r = 
+  let  d = b_evaluate (ArithmeticLogicNode Equal e1 e2) r in r
+evaluate (ArithmeticLogicNode NotEqual e1 e2) r = 
+  let  d = b_evaluate (ArithmeticLogicNode NotEqual e1 e2) r in r
+ 
+
+          -- | SumNode Operator Expr Expr
+          -- | ProdNode Operator Expr Expr
+          -- | UnaryNode Operator Expr
+          -- | NumNode Double
+
+a_evaluate ::  Expr -> Store -> Double
+a_evaluate (NumNode n) r = n
+a_evaluate (VarNode x) r = case see x r of
+ Nothing -> error ("unbound variable `" ++ x ++ "'")
+ Just v -> read v
+a_evaluate (SumNode Plus e1 e2) r = a_evaluate e1 r + a_evaluate e2 r
+a_evaluate (SumNode Minus e1 e2) r = a_evaluate e1 r - a_evaluate e2 r
+a_evaluate (UnaryNode Plus e) r = 0.0+( a_evaluate e r)
+a_evaluate (UnaryNode Minus e) r = 0.0- (a_evaluate e r)
+a_evaluate (ProdNode Times e1 e2) r = a_evaluate e1 r * a_evaluate e2 r
+a_evaluate (ProdNode Div e1 e2) r = a_evaluate e1 r / a_evaluate e2 r
+
+--           | LogicNode Operator Expr Expr
+--           | ArithmeticLogicNode Operator Expr Expr
+--           | AssignBoolNode String Expr
+--           | BoolVarNode String
+--           | BoolNode Bool
+--           | UnaryBoolNode Operator Expr
+
+b_evaluate ::  Expr -> Store -> Bool
+b_evaluate (BoolNode b) r = b
+b_evaluate (BoolVarNode x) r = case see x r of
+ Nothing -> error ("unbound variable `" ++ x ++ "'")
+ Just v -> read v
+b_evaluate (LogicNode And e1 e2) r = b_evaluate e1 r && b_evaluate e2 r
+b_evaluate (LogicNode Or e1 e2) r = b_evaluate e1 r || b_evaluate e2 r
+b_evaluate (ArithmeticLogicNode Greater e1 e2) r = b_evaluate e1 r > b_evaluate e2 r
+b_evaluate (ArithmeticLogicNode GreaterEqual e1 e2) r = b_evaluate e1 r >= b_evaluate e2 r
+b_evaluate (ArithmeticLogicNode Less e1 e2) r = b_evaluate e1 r < b_evaluate e2 r
+b_evaluate (ArithmeticLogicNode LessEqual e1 e2) r = b_evaluate e1 r <= b_evaluate e2 r
+b_evaluate (ArithmeticLogicNode Equal e1 e2) r = b_evaluate e1 r == b_evaluate e2 r
+b_evaluate (ArithmeticLogicNode NotEqual e1 e2) r = b_evaluate e1 r /= b_evaluate e2 r
+
+
+run:: String -> Store -> IO()
+run str store = 
+  let toks = tokenize str in
+    let (tree, _) = sqnc(toks, []) in 
+      let r = execute (tree) store in do
+        print toks
+        print " " 
+        print tree
