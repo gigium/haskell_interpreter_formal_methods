@@ -296,13 +296,27 @@ lookUp key ((x,y):xys)
 
 --Executes a sequence of commands, returning the updated Memory. 
 execute :: Tree -> Memory -> Memory
-execute (SeqNode []) r = r
-execute (SeqNode (s : ss)) r =  execute (SeqNode ss) (execute s r)
-execute (CommandNode e) r = execute e r
-execute (AssignNode s e) r = (s, evaluate e r) : r
-execute (ConditionalNode If b st) r | read(evaluate b r) /= False = execute st r
-execute (ConditionalNode While b s) r | read(evaluate b r) /= False = execute (SeqNode [s,ConditionalNode While b s]) r
- | otherwise = r
+execute tr r = 
+   case tr of
+      (SeqNode []) -> r
+      (SeqNode (s : ss)) -> execute (SeqNode ss) (execute s r)
+      (CommandNode e) -> execute e r
+      (AssignNode s e) -> (s, evaluate e r) : r
+      (ConditionalNode If b st) -> 
+         let cond = read(evaluate b r) in 
+            if cond /= False then execute st r else r
+      (ConditionalNode While b s) -> 
+         let cond = read(evaluate b r) in 
+            if cond /= False then execute (SeqNode [s,ConditionalNode While b s]) r else r
+      _ -> 
+        let s = evaluate tr r in r
+-- execute (SeqNode []) r = r
+-- execute (SeqNode (s : ss)) r =  execute (SeqNode ss) (execute s r)
+-- execute (CommandNode e) r = execute e r
+-- execute (AssignNode s e) r = (s, evaluate e r) : r
+-- execute (ConditionalNode If b st) r | read(evaluate b r) /= False = execute st r
+-- execute (ConditionalNode While b s) r | read(evaluate b r) /= False = execute (SeqNode [s,ConditionalNode While b s]) r
+--  | otherwise = r
 
 {-Evaluates the different Trees (logic and arithmetic), converting the value received by the type specific functions (boolean or integer) into
 	a String storable in Memory-}
@@ -382,6 +396,7 @@ analyze str store =
         print toks
         print " " 
         print tree
+
 
 --Command line interpreter (only arithmetic and boolean expressions, no while/if/sequence/variable assignment)
 main = do
