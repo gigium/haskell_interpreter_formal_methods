@@ -2,23 +2,24 @@ import Data.Char
 import Data.List
 import qualified Data.Map as M
 
+{-___________________________________________________ TOKENIZER ______________________________________________________-}
+
 data Operator = Plus | Minus | Times | Div 
                 | And | Or | Not 
                 | Greater | GreaterEqual | Less | LessEqual | Equal | NotEqual 
                 | While | If 
     deriving (Show, Eq)
 
---tokenizer 
 data Token = TokOp Operator
-           | TokAssign
-           | TokLParen
-           | TokRParen
-           | TokCondStart
-           | TokCondFinish
-           | TokSeqStart
-           | TokSeqFinish 
-           | TokIdent String
-           | TokNum Double
+           | TokAssign -- =
+           | TokLParen -- (
+           | TokRParen -- )
+           | TokCondStart -- [
+           | TokCondFinish -- ]
+           | TokSeqStart -- {
+           | TokSeqFinish -- }
+           | TokIdent String -- alphannum starting with lowercase letter
+           | TokNum Integer
            | TokBool Bool
            | TokStmEnd
            | TokEnd
@@ -80,6 +81,7 @@ falseKeyword cs = case stripPrefix "ALSE" cs of
                  Just restOfString -> TokBool (False) : tokenize restOfString
                  Nothing -> error $ "Cannot tokenize [FALSE not recognized]"
 
+
 greaterKeyword :: String -> [Token]
 greaterKeyword cs = case stripPrefix "REATER_EQUAL" cs of
                  Just restOfString -> TokOp (GreaterEqual) : tokenize restOfString
@@ -114,23 +116,26 @@ ifKeyword cs = case stripPrefix "F" cs of
                  Just restOfString -> TokOp (If) : tokenize restOfString
                  Nothing -> error $ "Cannot tokenize [IF not recognized]"
 
---parser--
+{-___________________________________________________ PARSER ______________________________________________________-}
 
-data Expr = ConditionalNode Operator Expr Expr
-          | SeqNode [Expr]
-          | AssignNode String Expr
-          | VarNode String
-          | CommandNode Expr 
-          | LogicNode Operator Expr Expr
-          | ArithmeticLogicNode Operator Expr Expr
-          | BoolNode Bool
-          | BoolVarNode String
-          | UnaryBoolNode Operator Expr
-          | SumNode Operator Expr Expr
-          | ProdNode Operator Expr Expr
-          | UnaryNode Operator Expr
-          | NumNode Double
+--Definition of expression types -> nodes in the parser tree
+data Tree = SeqNode [Tree]
+          | CommandNode Tree 
+          | AssignNode String Tree
+          --arithmetic
+          | SumNode Operator Tree Tree
+          | ProdNode Operator Tree Tree
+          | UnaryNode Operator Tree
+          --boolean logic
+          | LogicNode Operator Tree Tree
+          | ArithmeticLogicNode Operator Tree Tree
+          | UnaryBoolNode Operator Tree
+          -- While, If
+          | ConditionalNode Operator Tree Tree
+          --terminals
+          | NumNode Integer | BoolNode Bool | VarNode String          
     deriving Show          
+
 
 
 lookAhead :: [Token] -> Token
@@ -143,8 +148,15 @@ accept [] = error "Nothing to accept"
 accept (t:ts) = ts
 
 
+parse :: [Token] -> Tree
+parse toks = let (tree, toks') = sqnc(toks, [])
+             in
+               if null toks' 
+               then tree
+               else error $ "Leftover tokens: " ++ show toks'
 
-sqnc :: ([Token], [Expr]) -> (Expr, [Token])
+
+sqnc :: ([Token], [Tree]) -> (Tree, [Token])
 sqnc (toks, expr_array) = 
   case lookAhead toks of
     TokSeqStart -> sqnc(accept toks, expr_array)
@@ -157,8 +169,7 @@ sqnc (toks, expr_array) =
               _ -> error $ "error on token: " ++ show toks'
 
 
-
-command :: [Token] -> (Expr, [Token])
+command :: [Token] -> (Tree, [Token])
 command toks = 
     let (expTree, toks') = expression(toks) 
       in case lookAhead toks'  of
@@ -167,8 +178,7 @@ command toks =
 
 
 
-
-expression :: [Token] -> (Expr, [Token])
+expression :: [Token] -> (Tree, [Token])
 expression toks = 
    let (termTree, toks') = term toks
    in
@@ -192,7 +202,7 @@ expression toks =
 
 
 
-term :: [Token] -> (Expr, [Token])
+term :: [Token] -> (Tree, [Token])
 term toks = 
     case lookAhead toks of
       TokNum n -> a_term(toks)
@@ -208,7 +218,7 @@ term toks =
 
 
 
-c_term :: [Token] -> (Expr, Expr, [Token])
+c_term :: [Token] -> (Tree, Tree, [Token])
 c_term toks = 
     case lookAhead toks of
     TokCondStart      -> 
@@ -226,7 +236,7 @@ c_term toks =
     _ -> error $"Error !CONDSTART " ++ (show . accept) toks
 
 
-b_term :: [Token] -> (Expr, [Token])
+b_term :: [Token] -> (Tree, [Token])
 b_term toks = 
    case lookAhead toks of
       (TokBool x)     -> (BoolNode x, accept toks)
@@ -244,7 +254,7 @@ b_term toks =
 
 
 
-a_term :: [Token] -> (Expr, [Token])
+a_term :: [Token] -> (Tree, [Token])
 a_term toks = 
    let (facTree, toks') = a_factor toks
    in
@@ -255,7 +265,7 @@ a_term toks =
          _ -> (facTree, toks')
 
 
-a_factor :: [Token] -> (Expr, [Token])
+a_factor :: [Token] -> (Tree, [Token])
 a_factor toks = 
    case lookAhead toks of
       (TokNum x)     -> (NumNode x, accept toks)
@@ -272,18 +282,20 @@ a_factor toks =
       _ -> error $ "Parse error on token: " ++ show toks
 
 
---evaluating--
+{-___________________________________________________ EVALUATION ______________________________________________________-}
 
-type Store = [(String, String)]
+type Memory = [(String, String)]
 
-see :: (Eq a) => a -> [(a,b)] -> Maybe b
-see _key [] = Nothing
-see key ((x,y):xys)
+
+--Reads the memory, if variables with the same name are in memory it reads the last updated value (STACK mode).
+lookUp :: (Eq a) => a -> [(a,b)] -> Maybe b
+lookUp _key [] = Nothing
+lookUp key ((x,y):xys)
  | key == x = Just y
- | otherwise = see key xys
+ | otherwise = lookUp key xys
 
-
-execute :: Expr -> Store -> Store
+--Executes a sequence of commands, returning the updated Memory. 
+execute :: Tree -> Memory -> Memory
 execute (SeqNode []) r = r
 execute (SeqNode (s : ss)) r =  execute (SeqNode ss) (execute s r)
 execute (CommandNode e) r = execute e r
@@ -292,8 +304,9 @@ execute (ConditionalNode If b st) r | read(evaluate b r) /= False = execute st r
 execute (ConditionalNode While b s) r | read(evaluate b r) /= False = execute (SeqNode [s,ConditionalNode While b s]) r
  | otherwise = r
 
-
-evaluate :: Expr -> Store -> String 
+{-Evaluates the different Trees (logic and arithmetic), converting the value received by the type specific functions (boolean or integer) into
+	a String storable in Memory-}
+evaluate :: Tree -> Memory -> String 
 --arithmetic
 evaluate (NumNode n) r = show (a_evaluate (NumNode n) r)
 evaluate (SumNode Plus e1 e2) r = show (a_evaluate (SumNode Plus e1 e2) r) 
@@ -302,7 +315,6 @@ evaluate (UnaryNode Plus e1) r = show (a_evaluate (UnaryNode Plus e1) r )
 evaluate (UnaryNode Minus e1) r = show (a_evaluate (UnaryNode Minus e1) r)
 evaluate (ProdNode Times e1 e2) r = show (a_evaluate (ProdNode Times e1 e2) r) 
 evaluate (ProdNode Div e1 e2) r = show (a_evaluate (ProdNode Div e1 e2) r) 
-
 --bool
 evaluate (BoolNode b) r = show(b_evaluate (BoolNode b) r)
 evaluate (LogicNode And e1 e2) r = show(b_evaluate (LogicNode And e1 e2) r)
@@ -314,39 +326,28 @@ evaluate (ArithmeticLogicNode Less e1 e2) r = show(b_evaluate (ArithmeticLogicNo
 evaluate (ArithmeticLogicNode LessEqual e1 e2) r = show(b_evaluate (ArithmeticLogicNode LessEqual e1 e2) r)
 evaluate (ArithmeticLogicNode Equal e1 e2) r = show(b_evaluate (ArithmeticLogicNode Equal e1 e2) r)
 evaluate (ArithmeticLogicNode NotEqual e1 e2) r = show(b_evaluate (ArithmeticLogicNode NotEqual e1 e2) r)
-
 --var
-evaluate (VarNode x) r = case see x r of
+evaluate (VarNode x) r = case lookUp x r of
   Nothing -> error ("unbound variable `" ++ x ++ "'")
   Just v -> read v
 
-          -- | SumNode Operator Expr Expr
-          -- | ProdNode Operator Expr Expr
-          -- | UnaryNode Operator Expr
-          -- | NumNode Double
-
-a_evaluate ::  Expr -> Store -> Double
+--Evaluates arithmetic expressions returning the resulting integer value
+a_evaluate ::  Tree -> Memory -> Integer
 a_evaluate (NumNode n) r = n
-a_evaluate (VarNode x) r = case see x r of
+a_evaluate (VarNode x) r = case lookUp x r of
  Nothing -> error ("unbound variable `" ++ x ++ "'")
  Just v -> read v
 a_evaluate (SumNode Plus e1 e2) r = a_evaluate e1 r + a_evaluate e2 r
 a_evaluate (SumNode Minus e1 e2) r = a_evaluate e1 r - a_evaluate e2 r
-a_evaluate (UnaryNode Plus e) r = 0.0+( a_evaluate e r)
-a_evaluate (UnaryNode Minus e) r = 0.0-(a_evaluate e r)
+a_evaluate (UnaryNode Plus e) r = 0 +( a_evaluate e r)
+a_evaluate (UnaryNode Minus e) r = 0 -(a_evaluate e r)
 a_evaluate (ProdNode Times e1 e2) r = a_evaluate e1 r * a_evaluate e2 r
-a_evaluate (ProdNode Div e1 e2) r = a_evaluate e1 r / a_evaluate e2 r
+a_evaluate (ProdNode Div e1 e2) r = a_evaluate e1 r `div` a_evaluate e2 r
 
---           | LogicNode Operator Expr Expr
---           | ArithmeticLogicNode Operator Expr Expr
---           | AssignBoolNode String Expr
---           | BoolVarNode String
---           | BoolNode Bool
---           | UnaryBoolNode Operator Expr
-
-b_evaluate ::  Expr -> Store -> Bool
+--Evaluates logic expressions returning the resulting boolean value
+b_evaluate ::  Tree -> Memory -> Bool
 b_evaluate (BoolNode b) r = b
-b_evaluate (VarNode x) r = case see x r of
+b_evaluate (VarNode x) r = case lookUp x r of
  Nothing -> error ("unbound variable `" ++ x ++ "'")
  Just v -> read v
 b_evaluate (LogicNode And e1 e2) r = b_evaluate e1 r && b_evaluate e2 r
@@ -359,19 +360,42 @@ b_evaluate (ArithmeticLogicNode Equal e1 e2) r = a_evaluate e1 r == a_evaluate e
 b_evaluate (ArithmeticLogicNode NotEqual e1 e2) r = a_evaluate e1 r /= a_evaluate e2 r
 
 
-run :: String -> Store -> Store
+--___________________________________________________ RUNNING FUNCTIONS ______________________________________________________ 
+
+--rename of the String type in Program type
+type Program = String
+
+--Runs the given Program, on the specified Memory, returning the modified stack
+run :: Program -> Memory -> Memory
 run program store =
   let toks = tokenize program in
-    let (tree, _) = sqnc(toks, []) in 
+    let tree = parse toks in 
       let r = execute (tree) store in r
 
 
 
-analyze:: String -> Store -> IO()
+analyze:: Program -> Memory -> IO()
 analyze str store = 
   let toks = tokenize str in
-    let (tree, _) = sqnc(toks, []) in 
+    let tree = parse toks in 
       let r = execute (tree) store in do
         print toks
         print " " 
         print tree
+
+--Command line interpreter (only arithmetic and boolean expressions, no while/if/sequence/variable assignment)
+main = do
+   loop 
+
+loop = do
+   str <- getLine
+   if null str
+   then
+      return ()
+   else
+      let toks = tokenize str
+          (tree, _) = expression(toks)
+          val = evaluate(tree) []
+      in do
+          print val
+          loop 
