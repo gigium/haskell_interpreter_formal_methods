@@ -120,7 +120,7 @@ ifKeyword cs = case stripPrefix "F" cs of
 
 --Definition of expression types -> nodes in the parser tree
 data Tree = SeqNode [Tree]
-          | CommandNode Tree 
+          | StatementNode Tree 
           | AssignNode String Tree
           --arithmetic
           | SumNode Operator Tree Tree
@@ -131,7 +131,7 @@ data Tree = SeqNode [Tree]
           | ArithmeticLogicNode Operator Tree Tree
           | UnaryBoolNode Operator Tree
           -- While, If
-          | ConditionalNode Operator Tree Tree
+          | CommandNode Operator Tree Tree
           --terminals
           | NumNode Integer | BoolNode Bool | VarNode String          
     deriving Show          
@@ -156,24 +156,26 @@ parse toks = let (tree, toks') = sqnc(toks, [])
                else error $ "Leftover tokens: " ++ show toks'
 
 
+
 sqnc :: ([Token], [Tree]) -> (Tree, [Token])
 sqnc (toks, expr_array) = 
   case lookAhead toks of
     TokSeqStart -> sqnc(accept toks, expr_array)
     TokSeqFinish -> (SeqNode expr_array, accept toks)
     _ ->
-       let (commandTree, toks') = command toks 
+       let (commandTree, toks') = statement toks 
        in
           case lookAhead toks' of
               TokStmEnd -> sqnc(accept toks', expr_array++[commandTree])
               _ -> error $ "error on token: " ++ show toks'
 
 
-command :: [Token] -> (Tree, [Token])
-command toks = 
+
+statement :: [Token] -> (Tree, [Token])
+statement toks = 
     let (expTree, toks') = expression(toks) 
       in case lookAhead toks'  of
-        TokStmEnd -> (CommandNode expTree, toks')
+        TokStmEnd -> (StatementNode expTree, toks')
         _ -> (expTree,  toks')
 
 
@@ -210,7 +212,7 @@ term toks =
       (TokOp op) | elem op [While, If] ->
         let (condTree, seqTree, toks') = c_term(accept toks)
         in 
-          (ConditionalNode op condTree seqTree, toks')
+          (CommandNode op condTree seqTree, toks')
       (TokOp op) | elem op [Not] -> b_term(toks)
       (TokOp op) | elem op [Plus, Minus] -> a_term(toks)
       TokIdent str -> (VarNode str, accept toks) 
@@ -300,23 +302,17 @@ execute tr r =
    case tr of
       (SeqNode []) -> r
       (SeqNode (s : ss)) -> execute (SeqNode ss) (execute s r)
-      (CommandNode e) -> execute e r
+      (StatementNode e) -> execute e r
       (AssignNode s e) -> (s, evaluate e r) : r
-      (ConditionalNode If b st) -> 
+      (CommandNode If b st) -> 
          let cond = read(evaluate b r) in 
             if cond /= False then execute st r else r
-      (ConditionalNode While b s) -> 
+      (CommandNode While b s) -> 
          let cond = read(evaluate b r) in 
-            if cond /= False then execute (SeqNode [s,ConditionalNode While b s]) r else r
+            if cond /= False then execute (SeqNode [s,CommandNode While b s]) r else r
       _ -> 
         let s = evaluate tr r in r
--- execute (SeqNode []) r = r
--- execute (SeqNode (s : ss)) r =  execute (SeqNode ss) (execute s r)
--- execute (CommandNode e) r = execute e r
--- execute (AssignNode s e) r = (s, evaluate e r) : r
--- execute (ConditionalNode If b st) r | read(evaluate b r) /= False = execute st r
--- execute (ConditionalNode While b s) r | read(evaluate b r) /= False = execute (SeqNode [s,ConditionalNode While b s]) r
---  | otherwise = r
+
 
 {-Evaluates the different Trees (logic and arithmetic), converting the value received by the type specific functions (boolean or integer) into
 	a String storable in Memory-}
