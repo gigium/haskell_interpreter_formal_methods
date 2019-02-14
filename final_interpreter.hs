@@ -167,7 +167,7 @@ sqnc (toks, expr_array) =
        in
           case lookAhead toks' of
               TokStmEnd -> sqnc(accept toks', expr_array++[commandTree])
-              _ -> error $ "error on token: " ++ show toks'
+              _ -> (commandTree, toks')
 
 
 
@@ -194,6 +194,9 @@ expression toks =
          (TokOp op) | elem op [Plus, Minus] -> 
             let (exTree, toks'') = expression (accept toks') 
             in (SumNode op termTree exTree, toks'')
+         (TokOp op) | elem op [Times, Div] -> 
+            let (exTree, toks'') = expression (accept toks') 
+            in (ProdNode op termTree exTree, toks'')
          TokAssign ->
             case termTree of
                VarNode str -> 
@@ -339,7 +342,7 @@ evaluate (ArithmeticLogicNode NotEqual e1 e2) r = show(b_evaluate (ArithmeticLog
 --var
 evaluate (VarNode x) r = case lookUp x r of
   Nothing -> error ("unbound variable `" ++ x ++ "'")
-  Just v -> read v
+  Just v -> v
 
 --Evaluates arithmetic expressions returning the resulting integer value
 a_evaluate ::  Tree -> Memory -> Integer
@@ -384,7 +387,7 @@ run program store =
 
 
 
-analyze:: Program -> Memory -> IO()
+analyze :: Program -> Memory -> IO()
 analyze str store = 
   let toks = tokenize str in
     let tree = parse toks in 
@@ -393,7 +396,21 @@ analyze str store =
         print " " 
         print tree
 
+type ProgramInput = String
 
+factorial :: ProgramInput -> IO()
+factorial number = 
+  print $ lookUp "result" $ run "{exit=1; n=num; result=num; WHILE[n EQUAL_NOT exit]{n=n-1; result=result*n;};}" [("num", number)]
+
+fibonacci :: ProgramInput -> IO()
+fibonacci number = 
+  print $ lookUp "result" $ run "{result=0; n=num; w=0; y=1; WHILE[n EQUAL_NOT w]{z=result+y; result=y; y=z; n=n-1;};}" [("num", number)]
+
+
+power :: ProgramInput -> ProgramInput -> IO()
+power number exp = 
+  print $ lookUp "result" $ run "{result=1; count=0; n=num; ex=exp; WHILE[count LESS ex]{count=count+1;result=result*n;};}" [("num", number), ("exp", exp)]
+  
 --Command line interpreter (only arithmetic and boolean expressions, no while/if/sequence/variable assignment)
 main = do
    loop 
