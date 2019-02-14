@@ -398,19 +398,21 @@ analyze str store =
 
 type ProgramInput = String
 
+-- factorial "5"
 factorial :: ProgramInput -> IO()
 factorial number = 
   print $ lookUp "result" $ run "{exit=1; n=num; result=num; WHILE[n EQUAL_NOT exit]{n=n-1; result=result*n;};}" [("num", number)]
 
+-- fibonacci "5"
 fibonacci :: ProgramInput -> IO()
 fibonacci number = 
   print $ lookUp "result" $ run "{result=0; n=num; w=0; y=1; WHILE[n EQUAL_NOT w]{z=result+y; result=y; y=z; n=n-1;};}" [("num", number)]
 
-
+-- power "2" "4"
 power :: ProgramInput -> ProgramInput -> IO()
 power number exp = 
   print $ lookUp "result" $ run "{result=1; count=0; n=num; ex=exp; WHILE[count LESS ex]{count=count+1;result=result*n;};}" [("num", number), ("exp", exp)]
-  
+
 --Command line interpreter (only arithmetic and boolean expressions, no while/if/sequence/variable assignment)
 main = do
    loop 
