@@ -1,6 +1,6 @@
 import Data.Char
 import Data.List
-import qualified Data.Map as M
+import System.IO 
 
 {-___________________________________________________ TOKENIZER ______________________________________________________-}
 
@@ -314,7 +314,7 @@ execute tr r =
          let cond = read(evaluate b r) in 
             if cond /= False then execute (SeqNode [s,CommandNode While b s]) r else r
       _ -> 
-        let s = evaluate tr r in r
+        ("stdOut", evaluate tr r) : r
 
 
 {-Evaluates the different Trees (logic and arithmetic), converting the value received by the type specific functions (boolean or integer) into
@@ -379,12 +379,16 @@ b_evaluate (ArithmeticLogicNode NotEqual e1 e2) r = a_evaluate e1 r /= a_evaluat
 type Program = String
 
 --Runs the given Program, on the specified Memory, returning the modified stack
-run :: Program -> Memory -> Memory
-run program store =
+_run :: Program -> Memory -> Memory
+_run program store =
   let toks = tokenize program in
     let tree = parse toks in 
       let r = execute (tree) store in r
 
+
+run :: Program -> VarName -> ProgramInput -> ProgramOutput -> IO()
+run p var inp out =
+  print $ lookUp out $ _run p [(var, inp)]
 
 
 analyze :: Program -> Memory -> IO()
@@ -393,39 +397,49 @@ analyze str store =
     let tree = parse toks in 
       let r = execute (tree) store in do
         print toks
-        print " " 
+        putStrLn " " 
         print tree
 
+
+type VarName = String
 type ProgramInput = String
+type ProgramOutput = String
 
 -- factorial "5"
 factorial :: ProgramInput -> IO()
 factorial number = 
-  print $ lookUp "result" $ run "{exit=1; n=num; result=num; WHILE[n EQUAL_NOT exit]{n=n-1; result=result*n;};}" [("num", number)]
+  print $ lookUp "result" $ _run "{exit=1; n=num; result=num; WHILE[n EQUAL_NOT exit]{n=n-1; result=result*n;};}" [("num", number)]
 
 -- fibonacci "5"
 fibonacci :: ProgramInput -> IO()
 fibonacci number = 
-  print $ lookUp "result" $ run "{result=0; n=num; w=0; y=1; WHILE[n EQUAL_NOT w]{z=result+y; result=y; y=z; n=n-1;};}" [("num", number)]
+  print $ lookUp "result" $ _run "{result=0; n=num; w=0; y=1; WHILE[n EQUAL_NOT w]{z=result+y; result=y; y=z; n=n-1;};}" [("num", number)]
 
 -- power "2" "4"
 power :: ProgramInput -> ProgramInput -> IO()
 power number exp = 
-  print $ lookUp "result" $ run "{result=1; count=0; n=num; ex=exp; WHILE[count LESS ex]{count=count+1;result=result*n;};}" [("num", number), ("exp", exp)]
+  print $ lookUp "result" $ _run "{result=1; count=0; n=num; ex=exp; WHILE[count LESS ex]{count=count+1;result=result*n;};}" [("num", number), ("exp", exp)]
 
---Command line interpreter (only arithmetic and boolean expressions, no while/if/sequence/variable assignment)
+
+
+
+
+--Command line interpreter
 main = do
-   loop 
+   putStrLn "pippo Command Line Interpreter"
+   putStrLn ""
+   loop []
 
-loop = do
+loop mem = do
+   putStr "pippo> "
+   hFlush stdout 
    str <- getLine
    if null str
    then
       return ()
    else
-      let toks = tokenize str
-          (tree, _) = expression(toks)
-          val = evaluate(tree) []
-      in do
-          print val
-          loop 
+      let mem' = _run(str) (("stdOut", "null"):mem)
+      in let out = lookUp "stdOut" mem' in
+        do
+          print out
+          loop mem'
