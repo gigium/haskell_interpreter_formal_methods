@@ -425,13 +425,18 @@ power number exp =
 
 
 --Command line interpreter
-main = do
-   putStrLn "pippo Command Line Interpreter"
-   putStrLn ""
-   loop []
+main = do   
+  putStrLn "Command Line Interpreter"                       
+  putStrLn " _____  _____  _   __ _   _" 
+  putStrLn "/  __ \\/  ___|| | / /| \\ | |"
+  putStrLn "| /  \\/\\ `--. | |/ / |  \\| |"
+  putStrLn "| |     `--. \\|    \\ | . ` |"
+  putStrLn "| \\__/\\/\\__/ /| |\\  \\| |\\  |"
+  putStrLn " \\____/\\____/ \\_| \\_/\\_| \\_/"
+  loop []
 
 loop mem = do
-   putStr "pippo> "
+   putStr "CSKN> "
    hFlush stdout 
    str <- getLine
    if null str
