@@ -241,6 +241,7 @@ c_term toks =
     _ -> error $"Error !CONDSTART " ++ (show . accept) toks
 
 
+
 b_term :: [Token] -> (Tree, [Token])
 b_term toks = 
    case lookAhead toks of
@@ -401,9 +402,12 @@ analyze str store =
         print tree
 
 
+
 type VarName = String
 type ProgramInput = String
 type ProgramOutput = String
+
+
 
 -- factorial "5"
 factorial :: ProgramInput -> IO()
@@ -426,12 +430,12 @@ power number exp =
 
 --Command line interpreter
 main = do
-   putStrLn "pippo Command Line Interpreter"
+   putStrLn "CSKN Command Line Interpreter"
    putStrLn ""
    loop []
 
 loop mem = do
-   putStr "pippo> "
+   putStr "CSKN> "
    hFlush stdout 
    str <- getLine
    if null str
