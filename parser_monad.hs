@@ -373,6 +373,7 @@ digit = sat isDigit
 symbol :: String -> Parser String
 symbol xs = token (string xs)
 
+
 -- using char: parser for string xs, with the string itself returned as the result value
 string :: String -> Parser String
 string [] = return []
@@ -433,106 +434,4 @@ item = P $ \inp ->
   case inp of
     []     -> []
     (x:xs) -> [(x, xs)]
-
-
-
-{-___________________________________________________ EVALUATION ______________________________________________________-}
-
-
-type Memory = [(String, String)]
-
-
---Reads the memory, if variables with the same name are in memory it reads the last updated value (STACK mode).
-lookUp :: (Eq a) => a -> [(a,b)] -> Maybe b
-lookUp _key [] = Nothing
-lookUp key ((x,y):xys)
- | key == x = Just y
- | otherwise = lookUp key xys
-
---Executes a sequence of commands, returning the updated Memory. 
-execute :: Tree -> Memory -> Memory
-execute tr r = 
-   case tr of
-      (SeqNode []) -> r
-      (SeqNode (s : ss)) -> execute (SeqNode ss) (execute s r)
-      (StatementNode e) -> execute e r
-      (AssignNode s e) -> (s, evaluate e r) : r
-      (CommandNode If b st) -> 
-         let cond = read(evaluate b r) in 
-            if cond /= False then execute st r else r
-      (CommandNode While b s) -> 
-         let cond = read(evaluate b r) in 
-            if cond /= False then execute (SeqNode [s,CommandNode While b s]) r else r
-      _ -> 
-        ("stdOut", evaluate tr r) : r
-
-
-{-Evaluates the different Trees (logic and arithmetic), converting the value received by the type specific functions (boolean or integer) into
-  a String storable in Memory-}
-evaluate :: Tree -> Memory -> String 
---arithmetic
-evaluate (NumNode n) r = show (a_evaluate (NumNode n) r)
-evaluate (SumNode Plus e1 e2) r = show (a_evaluate (SumNode Plus e1 e2) r) 
-evaluate (SumNode Minus e1 e2) r = show (a_evaluate (SumNode Minus e1 e2) r)
-evaluate (UnaryNode Plus e1) r = show (a_evaluate (UnaryNode Plus e1) r )
-evaluate (UnaryNode Minus e1) r = show (a_evaluate (UnaryNode Minus e1) r)
-evaluate (ProdNode Times e1 e2) r = show (a_evaluate (ProdNode Times e1 e2) r) 
-evaluate (ProdNode Div e1 e2) r = show (a_evaluate (ProdNode Div e1 e2) r) 
---bool
-evaluate (BoolNode b) r = show(b_evaluate (BoolNode b) r)
-evaluate (LogicNode And e1 e2) r = show(b_evaluate (LogicNode And e1 e2) r)
-evaluate (LogicNode Or e1 e2) r = show(b_evaluate (LogicNode Or e1 e2) r)
-evaluate (UnaryBoolNode Not e1) r = show(b_evaluate (UnaryBoolNode Not e1) r)
-evaluate (ArithmeticLogicNode Greater e1 e2) r = show(b_evaluate (ArithmeticLogicNode Greater e1 e2) r)
-evaluate (ArithmeticLogicNode GreaterEqual e1 e2) r = show(b_evaluate (ArithmeticLogicNode GreaterEqual e1 e2) r)
-evaluate (ArithmeticLogicNode Less e1 e2) r = show(b_evaluate (ArithmeticLogicNode Less e1 e2) r)
-evaluate (ArithmeticLogicNode LessEqual e1 e2) r = show(b_evaluate (ArithmeticLogicNode LessEqual e1 e2) r)
-evaluate (ArithmeticLogicNode Equal e1 e2) r = show(b_evaluate (ArithmeticLogicNode Equal e1 e2) r)
-evaluate (ArithmeticLogicNode NotEqual e1 e2) r = show(b_evaluate (ArithmeticLogicNode NotEqual e1 e2) r)
---var
-evaluate (VarNode x) r = case lookUp x r of
-  Nothing -> error ("unbound variable `" ++ x ++ "'")
-  Just v -> v
-
---Evaluates arithmetic expressions returning the resulting integer value
-a_evaluate ::  Tree -> Memory -> Int
-a_evaluate (NumNode n) r = n
-a_evaluate (VarNode x) r = case lookUp x r of
- Nothing -> error ("unbound variable `" ++ x ++ "'")
- Just v -> read v
-a_evaluate (SumNode Plus e1 e2) r = a_evaluate e1 r + a_evaluate e2 r
-a_evaluate (SumNode Minus e1 e2) r = a_evaluate e1 r - a_evaluate e2 r
-a_evaluate (UnaryNode Plus e) r = 0 +( a_evaluate e r)
-a_evaluate (UnaryNode Minus e) r = 0 -(a_evaluate e r)
-a_evaluate (ProdNode Times e1 e2) r = a_evaluate e1 r * a_evaluate e2 r
-a_evaluate (ProdNode Div e1 e2) r = a_evaluate e1 r `div` a_evaluate e2 r
-
---Evaluates logic expressions returning the resulting boolean value
-b_evaluate ::  Tree -> Memory -> Bool
-b_evaluate (BoolNode b) r = b
-b_evaluate (VarNode x) r = case lookUp x r of
- Nothing -> error ("unbound variable `" ++ x ++ "'")
- Just v -> read v
-b_evaluate (LogicNode And e1 e2) r = b_evaluate e1 r && b_evaluate e2 r
-b_evaluate (LogicNode Or e1 e2) r = b_evaluate e1 r || b_evaluate e2 r
-b_evaluate (ArithmeticLogicNode Greater e1 e2) r = a_evaluate e1 r > a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode GreaterEqual e1 e2) r = a_evaluate e1 r >= a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode Less e1 e2) r = a_evaluate e1 r < a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode LessEqual e1 e2) r = a_evaluate e1 r <= a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode Equal e1 e2) r = a_evaluate e1 r == a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode NotEqual e1 e2) r = a_evaluate e1 r /= a_evaluate e2 r
-
-
---rename of the String type in Program type
-type Program = String
-
-type VarName = String
-type ProgramInput = String
-type ProgramOutput = String
-
-run :: Program -> Memory -> Memory
-run p env = case (parse program p) of
-  [(t, [])]  -> execute (t) env
-  [(_, out)] -> error ("Unused input " ++ out)
-  []         -> error "Invalid input"
 
