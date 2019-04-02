@@ -1,5 +1,9 @@
 import           Control.Applicative
 import           Data.Char
+import           Data.List
+import           Data.Functor
+import           Control.Monad
+
 
 -- this declaration states that a parser of type a is a function that takes an input string and produces a list of results, 
 -- each of which is a pair comprising a result value of type a and an output string.
@@ -206,7 +210,7 @@ comm = do
 -- <expr> ::= <aepr> | <bexpr>
 expr :: Parser Tree
 expr = do
-  aexpr <|> bexpr 
+  bexpr <|> aexpr
 
 
 ----------------------------------PARSING OF ARITHMETIC EXPRESSIONS-------------------------------------------
@@ -373,7 +377,6 @@ digit = sat isDigit
 symbol :: String -> Parser String
 symbol xs = token (string xs)
 
-
 -- using char: parser for string xs, with the string itself returned as the result value
 string :: String -> Parser String
 string [] = return []
@@ -435,3 +438,181 @@ item = P $ \inp ->
     []     -> []
     (x:xs) -> [(x, xs)]
 
+
+
+{-------------------------------------------EVALUATION---------------------------------------------}
+
+data Value =
+   IntVal  Int
+ | BoolVal Bool
+ | Error
+ deriving(Show)
+
+
+instance Num Value where
+  IntVal a + IntVal b = IntVal(a+b)
+  IntVal a * IntVal b = IntVal(a*b)
+  IntVal a - IntVal b = IntVal(a-b)
+
+instance Eq Value where
+  IntVal a == IntVal b = a==b
+  BoolVal a == BoolVal b = a==b
+
+
+m_div :: Value -> Value -> Value
+m_div (IntVal a) (IntVal b) = IntVal(a `div` b)
+
+
+m_and :: Value -> Value -> Value
+m_and (BoolVal a) (BoolVal b) = BoolVal(a && b)
+m_or :: Value -> Value -> Value
+m_or (BoolVal a) (BoolVal b) = BoolVal(a || b)
+m_not :: Value -> Value
+m_not (BoolVal b) = BoolVal(not b)
+
+greater :: Value -> Value -> Value
+greater (IntVal a) (IntVal b) = BoolVal(a>b)
+greater_eq :: Value -> Value -> Value
+greater_eq (IntVal a) (IntVal b) = BoolVal(a>=b)
+
+less :: Value -> Value -> Value
+less (IntVal a) (IntVal b) = BoolVal(a<b)
+less_eq :: Value -> Value -> Value
+less_eq (IntVal a) (IntVal b) = BoolVal(a<=b)
+
+eq :: Value -> Value -> Value
+eq (IntVal a) (IntVal b) = BoolVal(a==b)
+not_eq :: Value -> Value -> Value
+not_eq (IntVal a) (IntVal b) = BoolVal(a/=b)
+
+
+type Store = [(String, Value)]
+
+newtype Interp a = Interp { runInterp :: Store -> Either String (a, Store) }
+
+instance Monad Interp where
+  return x = Interp $ \r -> Right (x, r)
+  i >>= k  = Interp $ \r -> case runInterp i r of
+               Left msg      -> Left msg
+               Right (x, r') -> runInterp (k x) r'
+  fail msg = Interp $ \_ -> Left msg
+
+instance Functor Interp where
+  fmap = liftM -- imported from Control.Monad
+
+instance Applicative Interp where
+  pure  = return
+  (<*>) = ap -- imported from Control.Monad
+
+rd :: String -> Interp Value
+rd x = Interp $ \r -> case lookup x r of
+         Nothing -> Left ("unbound variable `" ++ x ++ "'")
+         Just v  -> Right (v, r)
+
+wr :: String -> Value -> Interp ()
+wr x v = Interp $ \r -> Right ((), (x, v) : r)
+
+
+exec :: Tree -> Interp ()
+exec (SeqNode [])       = 
+  do return ()
+exec (SeqNode (s : ss)) = 
+  do 
+    exec s
+    exec (SeqNode ss)
+exec(StatementNode e) = do exec e    
+exec (AssignNode x e) = 
+  do 
+    v <- eval e
+    wr x v
+exec (CommandNode While e s) = 
+  do 
+    v <- eval e
+    when (v /= (BoolVal False)) (exec (SeqNode [s,CommandNode While e s]))
+exec (CommandNode If e s) = 
+  do 
+    v <- eval e
+    when (v /= (BoolVal False)) (exec s)
+
+
+
+eval :: Tree -> Interp Value
+eval (NumNode n) = do return (IntVal n)
+eval (VarNode x) = do rd x
+eval (SumNode Plus e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (v1 + v2)
+eval (SumNode Minus e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (v1 - v2)
+eval (ProdNode Times e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (v1 * v2)
+eval (ProdNode Div e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (m_div (v1) (v2))
+
+eval (BoolNode n) = do return (BoolVal n)
+eval (LogicNode And e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (m_and (v1) (v2))
+eval (LogicNode Or e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (m_or (v1) (v2))
+eval (UnaryBoolNode Not e1) =
+  do 
+    v1 <- eval e1
+    return (m_not (v1))
+
+eval (ArithmeticLogicNode Greater e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (greater (v1) (v2))
+eval (ArithmeticLogicNode GreaterEqual e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (greater_eq (v1) (v2))
+
+eval (ArithmeticLogicNode Less e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (less (v1) (v2))
+eval (ArithmeticLogicNode LessEqual e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (less_eq (v1) (v2))
+
+eval (ArithmeticLogicNode Equal e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (eq (v1) (v2))
+eval (ArithmeticLogicNode NotEqual e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (not_eq (v1) (v2))
+
+
+
+run :: String -> Store -> IO()
+run p r = 
+  case parse program p of
+    [(a,b)] -> print $ runInterp (exec a) r 
+  
