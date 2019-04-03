@@ -123,18 +123,18 @@ data Tree = SeqNode [Tree]
   -- <sqnc> ::= <stm>; | <stm>; <sqnc>
   -- <stm> ::= <expr> | <command>
 
-  -- <comm> ::= <identifier> = <expr> | <IF>[<bexpr>]<program> | <WHILE>[<bexpr>]<program>
-  -- <expr> ::= <aepr> | <bexpr>
+  -- <comm> ::= <identifier> = <expr> | <IF>[<expr>]<program> | <WHILE>[<expr>]<program>
+  -- <expr> ::= <aexpr> | <bexpr>
 
   -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
+                  | <aterm> GREATER <aexpr> | <aterm> GREATER_EQUAL <aexpr> 
+                  | <aterm> LESS <aexpr> | <aterm> LESS_EQUAL <aexpr> 
+                  | <aterm> EQUAL <aexpr> | <aterm> NOT_EQUAL <aexpr>
   -- <aterm> ::=  <afactor> | <afactor> * <aterm>  | <afactor> / <aterm> 
   -- <afactor> ::=  ( <aexpr> ) | + <natural> | - <natural> | <identifier> | <natural> 
 
   -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
-                  | <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
-                  | <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
-                  | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
-  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> | <natural> 
+  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val>
 
   -- <natural> ::=  0 | 1 | 2 | ...
   -- <bool_val> ::=  TRUE | FALSE
@@ -183,7 +183,7 @@ stm = do
 
 
 ----------------------------------PARSING OF COMMANDS-------------------------------------------
--- <comm> ::= <identifier> = <expr> | <IF>[<bexpr>]<program> | <WHILE>[<bexpr>]<program>
+-- <comm> ::= <identifier> = <expr> | <IF>[<expr>]<program> | <WHILE>[<expr>]<program>
 comm :: Parser Tree
 comm = do 
   var <- identifier
@@ -193,14 +193,14 @@ comm = do
   <|> 
   do symbol "IF"
      symbol "["
-     b <- bexpr
+     b <- expr
      symbol "]"
      s <-  program
      return (CommandNode If b s)
   <|> 
   do symbol "WHILE"
      symbol "["
-     b <- bexpr
+     b <- expr
      symbol "]"
      s <-  program
      return (CommandNode While b s)
@@ -210,11 +210,14 @@ comm = do
 -- <expr> ::= <aepr> | <bexpr>
 expr :: Parser Tree
 expr = do
-  bexpr <|> aexpr
+   aexpr <|> bexpr
 
 
 ----------------------------------PARSING OF ARITHMETIC EXPRESSIONS-------------------------------------------
 -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
+-- 				| <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
+-- 				| <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
+-- 				| <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
 aexpr :: Parser Tree
 aexpr = do
   t <- aterm
@@ -224,6 +227,24 @@ aexpr = do
    <|> do symbol "-"
           e <- aexpr
           return (SumNode Minus  t e)
+   <|> do symbol "GREATER"
+          e <- aexpr
+          return (ArithmeticLogicNode Greater t e)
+   <|> do symbol "GREATER_EQUAL"
+          e <- aexpr
+          return (ArithmeticLogicNode GreaterEqual t e)
+   <|> do symbol "LESS"
+          e <- aexpr
+          return (ArithmeticLogicNode Less t e)
+   <|> do symbol "LESS_EQUAL"
+          e <- aexpr
+          return (ArithmeticLogicNode LessEqual t e)
+   <|> do symbol "EQUAL"
+          e <- aexpr
+          return (ArithmeticLogicNode Equal t e)
+   <|> do symbol "NOT_EQUAL"
+          e <- aexpr
+          return (ArithmeticLogicNode NotEqual t e)
    <|> return t
 
 
@@ -266,9 +287,6 @@ afactor =
 
 ----------------------------------PARSING OF BOOLEAN EXPRESSIONS-------------------------------------------
   -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
---                | <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
---                | <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
---                | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
 bexpr :: Parser Tree
 bexpr = do 
   t <- bterm
@@ -278,28 +296,10 @@ bexpr = do
    <|> do symbol "OR"
           e <- bexpr
           return (LogicNode And t e)
-   <|> do symbol "GREATER"
-          e <- aexpr
-          return (ArithmeticLogicNode Greater t e)
-   <|> do symbol "GREATER_EQUAL"
-          e <- aexpr
-          return (ArithmeticLogicNode GreaterEqual t e)
-   <|> do symbol "LESS"
-          e <- aexpr
-          return (ArithmeticLogicNode Less t e)
-   <|> do symbol "LESS_EQUAL"
-          e <- aexpr
-          return (ArithmeticLogicNode LessEqual t e)
-   <|> do symbol "EQUAL"
-          e <- aexpr
-          return (ArithmeticLogicNode Equal t e)
-   <|> do symbol "NOT_EQUAL"
-          e <- aexpr
-          return (ArithmeticLogicNode NotEqual t e)
    <|> return t
 
 
-  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> | <natural> 
+  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> 
 bterm :: Parser Tree
 bterm = 
   do symbol "("
@@ -318,10 +318,7 @@ bterm =
   do 
      b <- bool_val
      return (BoolNode b)
-     <|>
-  do 
-     n <- natural
-     return (NumNode n) 
+
 
 ----------------------------------TERMINAL PARSERS-------------------------------------------
 -- <natural> ::=  0 | 1 | 2 | ...
@@ -442,27 +439,39 @@ item = P $ \inp ->
 
 {-------------------------------------------EVALUATION---------------------------------------------}
 
+-- Definition of Value data type which represents values that can be stored in the store(memory).
+-- A value can be of type Int for arithmetic operations or Bool for logic operations.
+-- Value is a kind of container for boolean or integer values, for example: IntVal 3 or BoolVal False.
+-- In this case IntVal and BoolVal are a wrapper for Int and Bool values respectively. 
 data Value =
    IntVal  Int
  | BoolVal Bool
- | Error
  deriving(Show)
 
-
+-- Definition of Value as a Num instance (For operations between IntVal) which makes it possible to add/multiply/subtract values of type: IntVal 3 + IntVal 4 = IntVal 7
 instance Num Value where
   IntVal a + IntVal b = IntVal(a+b)
-  IntVal a * IntVal b = IntVal(a*b)
+  IntVal a * IntVal b = IntVal(a*b) 
   IntVal a - IntVal b = IntVal(a-b)
+  abs (IntVal a) = IntVal(abs(a))
+  signum(IntVal a) = IntVal(signum(a))
 
+
+
+-- Definition of Value as a Eq instance which makes it possible to confront two IntVal(s) or two BoolVal(s) values;
+-- Example: IntVal 4 == IntVal 4 yelds True
 instance Eq Value where
   IntVal a == IntVal b = a==b
   BoolVal a == BoolVal b = a==b
 
 
+-- Definition of some fundamental operations between Value data types
+
+-- division (safe)
 m_div :: Value -> Value -> Value
 m_div (IntVal a) (IntVal b) = IntVal(a `div` b)
 
-
+-- boolean and, or, not
 m_and :: Value -> Value -> Value
 m_and (BoolVal a) (BoolVal b) = BoolVal(a && b)
 m_or :: Value -> Value -> Value
@@ -470,6 +479,7 @@ m_or (BoolVal a) (BoolVal b) = BoolVal(a || b)
 m_not :: Value -> Value
 m_not (BoolVal b) = BoolVal(not b)
 
+-- operators for compare IntVal(s): >, >=, <, <=, ==, /= which yeld a BoolVal: BoolVal True / BoolVal False
 greater :: Value -> Value -> Value
 greater (IntVal a) (IntVal b) = BoolVal(a>b)
 greater_eq :: Value -> Value -> Value
@@ -486,8 +496,17 @@ not_eq :: Value -> Value -> Value
 not_eq (IntVal a) (IntVal b) = BoolVal(a/=b)
 
 
+-- Defining the store type which is a list of tuples: String which represents the name of a variable and Value (defined above) that is the the value stored in the corresponding variable name.
 type Store = [(String, Value)]
 
+
+-- there are two "effects" that are candidates for being captured by a monadic structure:
+-- 		1. The passing around and updating of the store.
+-- 		2. Aborting running the program when a run-time error is encountered. (In the implementation above, the interpreter simply crashes when such an error occurs.)
+-- The first effect is typically captured by a state monad, the second by an error monad.
+
+-- We can use monad transformers to construct a composite monad for our two effects by combining a basic state monad and a basic error monad.
+-- Here, however, we simply construct the composite monad in one go.
 newtype Interp a = Interp { runInterp :: Store -> Either String (a, Store) }
 
 instance Monad Interp where
@@ -497,6 +516,8 @@ instance Monad Interp where
                Right (x, r') -> runInterp (k x) r'
   fail msg = Interp $ \_ -> Left msg
 
+
+-- Since the Applicative Monad Proposal (AMP) every Monad must also be an instance of Functor and Applicative.
 instance Functor Interp where
   fmap = liftM -- imported from Control.Monad
 
@@ -504,6 +525,9 @@ instance Applicative Interp where
   pure  = return
   (<*>) = ap -- imported from Control.Monad
 
+
+-- For reading from and writing to the store, we introduce effectful functions rd and wr
+-- Note that rd produces a Left-wrapped error message if a variable lookup fails.
 rd :: String -> Interp Value
 rd x = Interp $ \r -> case lookup x r of
          Nothing -> Left ("unbound variable `" ++ x ++ "'")
@@ -513,6 +537,7 @@ wr :: String -> Value -> Interp ()
 wr x v = Interp $ \r -> Right ((), (x, v) : r)
 
 
+-- For the execution of statements we have
 exec :: Tree -> Interp ()
 exec (SeqNode [])       = 
   do return ()
@@ -533,9 +558,14 @@ exec (CommandNode If e s) =
   do 
     v <- eval e
     when (v /= (BoolVal False)) (exec s)
+exec(n) = 
+  do 
+  	v <- eval n
+  	wr "stdOut" v 
 
-
-
+-- The monadic version of the expression evaluator
+-- In the case of a division by zero that results in an error message being produced through the Monad-method fail,
+-- which, for Interp, reduces to wrapping the message in a Left-value
 eval :: Tree -> Interp Value
 eval (NumNode n) = do return (IntVal n)
 eval (VarNode x) = do rd x
@@ -555,10 +585,12 @@ eval (ProdNode Times e1 e2) =
     v2 <- eval e2
     return (v1 * v2)
 eval (ProdNode Div e1 e2) =
-  do 
-    v1 <- eval e1
-    v2 <- eval e2
-    return (m_div (v1) (v2))
+  do
+	v1 <- eval e1
+	v2 <- eval e2
+	if v2 == (IntVal 0)
+	  then fail "division by zero"
+	  else return (m_div v1 v2)
 
 eval (BoolNode n) = do return (BoolVal n)
 eval (LogicNode And e1 e2) =
@@ -610,9 +642,12 @@ eval (ArithmeticLogicNode NotEqual e1 e2) =
     return (not_eq (v1) (v2))
 
 
+type Program = String
 
-run :: String -> Store -> IO()
+run :: Program -> Store -> IO()
 run p r = 
   case parse program p of
-    [(a,b)] -> print $ runInterp (exec a) r 
+    [(a,b)] -> case runInterp (exec a) r of 
+		Right (_,r')-> print r' 
+
   
