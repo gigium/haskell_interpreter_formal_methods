@@ -120,21 +120,22 @@ data Tree = SeqNode [Tree]
   -----------------------------------------------------------------------------
   
   -- <program> ::= {<sqnc>}
-  -- <sqnc> ::= <stm>; | <stm>; <sqnc>
-  -- <stm> ::= <expr> | <command>
+  -- <sqnc> ::= <stm>; <sqnc> | <stm>;
+  -- <stm> ::=  <command> |<expr>
 
   -- <comm> ::= <identifier> = <expr> | <IF>[<expr>]<program> | <WHILE>[<expr>]<program>
-  -- <expr> ::= <aexpr> | <bexpr>
+  -- <expr> ::= <bexpr> |<aexpr>
 
   -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
   -- <aterm> ::=  <afactor> | <afactor> * <aterm>  | <afactor> / <aterm> 
-  -- <afactor> ::=  ( <aexpr> ) | + <natural> | - <natural> | <identifier> | <natural> 
+  -- <afactor> ::=  ( <aexpr> ) | + <afactor> | - <afactor> | <identifier> | <natural> 
 
-  -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
-  -- <bterm> ::=  <aexpr> | ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val>
+  -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr>
       --        | <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
       --        | <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
-      --        | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
+      --        | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>  
+  -- <bterm> ::=  <aexpr> | ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val>
+ 
 
   -- <natural> ::=  0 | 1 | 2 | ...
   -- <bool_val> ::=  TRUE | FALSE
@@ -155,7 +156,7 @@ program = do
 
 
 ----------------------------------PARSING OF SEQUENCES OF STATEMENTS-------------------------------------------
--- <sqnc> ::= <stm>; | <stm>; <sqnc>
+-- <sqnc> ::=  <stm>; <sqnc> | <stm>;
 sqnc :: Parser [Tree]
 sqnc = do 
   s <- stm 
@@ -170,7 +171,7 @@ sqnc = do
 
 
 ----------------------------------PARSING OF STATEMENTS-------------------------------------------
--- <stm> ::= <expr> | <comm>
+ -- <stm> ::=  <command> |<expr>
 stm :: Parser Tree
 stm = do
     c <- comm
@@ -207,7 +208,7 @@ comm = do
 
 
 ----------------------------------PARSING OF EXPRESSIONS-------------------------------------------
--- <expr> ::= <aepr> | <bexpr>
+ -- <expr> ::= <bexpr> |<aexpr>
 expr :: Parser Tree
 expr = do
     bexpr <|> aexpr
@@ -240,7 +241,7 @@ aterm = do
    <|> return f
 
 
--- <afactor> ::=  ( <aexpr> ) | + <natural> | - <natural> | <identifier> | <natural> 
+ -- <afactor> ::=  ( <aexpr> ) | + <afactor> | - <afactor> | <identifier> | <natural> 
 afactor :: Parser Tree
 afactor = 
   do symbol "("
