@@ -250,11 +250,11 @@ afactor =
      <|> 
   do symbol "+"
      a <- afactor
-     return (UnaryBoolNode Plus a)
+     return (UnaryNode Plus a)
      <|> 
   do symbol "-"
      a <- afactor
-     return (UnaryBoolNode Minus a)
+     return (UnaryNode Minus a)
      <|> 
   do 
      id <-identifier
@@ -595,6 +595,14 @@ eval (ProdNode Div e1 e2) =
 	if v2 == (IntVal 0)
 	  then fail "division by zero"
 	  else return (m_div v1 v2)
+eval (UnaryNode Plus e1) =
+  do 
+    v1 <- eval e1
+    return (v1)
+eval (UnaryNode Minus e1)=
+  do 
+    v1 <- eval e1
+    return (IntVal 0 - v1)
 
 eval (BoolNode n) = do return (BoolVal n)
 eval (LogicNode And e1 e2) =
