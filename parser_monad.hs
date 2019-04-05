@@ -127,14 +127,14 @@ data Tree = SeqNode [Tree]
   -- <expr> ::= <aexpr> | <bexpr>
 
   -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
-                  | <aterm> GREATER <aexpr> | <aterm> GREATER_EQUAL <aexpr> 
-                  | <aterm> LESS <aexpr> | <aterm> LESS_EQUAL <aexpr> 
-                  | <aterm> EQUAL <aexpr> | <aterm> NOT_EQUAL <aexpr>
   -- <aterm> ::=  <afactor> | <afactor> * <aterm>  | <afactor> / <aterm> 
   -- <afactor> ::=  ( <aexpr> ) | + <natural> | - <natural> | <identifier> | <natural> 
 
   -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
-  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val>
+  -- <bterm> ::=  <aexpr> | ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val>
+      --        | <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
+      --        | <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
+      --        | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
 
   -- <natural> ::=  0 | 1 | 2 | ...
   -- <bool_val> ::=  TRUE | FALSE
@@ -307,7 +307,7 @@ bterm =
      return b
      <|> 
   do symbol "("
-     e <- expr
+     e <- bexpr
      symbol ")"
      return e
      <|> 
