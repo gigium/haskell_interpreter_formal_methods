@@ -210,14 +210,11 @@ comm = do
 -- <expr> ::= <aepr> | <bexpr>
 expr :: Parser Tree
 expr = do
-   aexpr <|> bexpr
+    bexpr <|> aexpr
 
 
 ----------------------------------PARSING OF ARITHMETIC EXPRESSIONS-------------------------------------------
 -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
--- 				| <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
--- 				| <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
--- 				| <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
 aexpr :: Parser Tree
 aexpr = do
   t <- aterm
@@ -227,24 +224,6 @@ aexpr = do
    <|> do symbol "-"
           e <- aexpr
           return (SumNode Minus  t e)
-   <|> do symbol "GREATER"
-          e <- aexpr
-          return (ArithmeticLogicNode Greater t e)
-   <|> do symbol "GREATER_EQUAL"
-          e <- aexpr
-          return (ArithmeticLogicNode GreaterEqual t e)
-   <|> do symbol "LESS"
-          e <- aexpr
-          return (ArithmeticLogicNode Less t e)
-   <|> do symbol "LESS_EQUAL"
-          e <- aexpr
-          return (ArithmeticLogicNode LessEqual t e)
-   <|> do symbol "EQUAL"
-          e <- aexpr
-          return (ArithmeticLogicNode Equal t e)
-   <|> do symbol "NOT_EQUAL"
-          e <- aexpr
-          return (ArithmeticLogicNode NotEqual t e)
    <|> return t
 
 
@@ -286,7 +265,10 @@ afactor =
      return (NumNode n)
 
 ----------------------------------PARSING OF BOOLEAN EXPRESSIONS-------------------------------------------
-  -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
+-- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
+--        | <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
+--        | <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
+--        | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
 bexpr :: Parser Tree
 bexpr = do 
   t <- bterm
@@ -296,12 +278,34 @@ bexpr = do
    <|> do symbol "OR"
           e <- bexpr
           return (LogicNode And t e)
+   <|> do symbol "GREATER"
+          e <- aexpr
+          return (ArithmeticLogicNode Greater t e)
+   <|> do symbol "GREATER_EQUAL"
+          e <- aexpr
+          return (ArithmeticLogicNode GreaterEqual t e)
+   <|> do symbol "LESS"
+          e <- aexpr
+          return (ArithmeticLogicNode Less t e)
+   <|> do symbol "LESS_EQUAL"
+          e <- aexpr
+          return (ArithmeticLogicNode LessEqual t e)
+   <|> do symbol "EQUAL"
+          e <- aexpr
+          return (ArithmeticLogicNode Equal t e)
+   <|> do symbol "NOT_EQUAL"
+          e <- aexpr
+          return (ArithmeticLogicNode NotEqual t e)
    <|> return t
 
 
-  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> 
+  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> | <aexpr>
 bterm :: Parser Tree
 bterm = 
+  do 
+     b <- aexpr
+     return b
+     <|> 
   do symbol "("
      e <- expr
      symbol ")"
@@ -642,7 +646,10 @@ eval (ArithmeticLogicNode NotEqual e1 e2) =
     return (not_eq (v1) (v2))
 
 
+
+
 type Program = String
+
 
 run :: Program -> Store -> IO()
 run p r = 
