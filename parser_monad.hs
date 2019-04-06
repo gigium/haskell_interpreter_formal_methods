@@ -3,6 +3,7 @@ import           Data.Char
 import           Data.List
 import           Data.Functor
 import           Control.Monad
+import 			 System.IO 
 
 
 -- this declaration states that a parser of type a is a function that takes an input string and produces a list of results, 
@@ -447,6 +448,7 @@ item = P $ \inp ->
 data Value =
    IntVal  Int
  | BoolVal Bool
+ | NullVal
  deriving(Show)
 
 -- Definition of Value as a Num instance (For operations between IntVal) which makes it possible to add/multiply/subtract values of type: IntVal 3 + IntVal 4 = IntVal 7
@@ -654,11 +656,65 @@ eval (ArithmeticLogicNode NotEqual e1 e2) =
 
 type Program = String
 
-
-run :: Program -> Store -> IO()
+run :: Program -> Store -> Store
 run p r = 
+  case parse program p of
+    [(a,b)] -> case runInterp (exec a) r of 
+		Right (_,r')->  r' 
+
+
+debug :: Program -> Store -> IO()
+debug p r = 
   case parse program p of
     [(a,b)] -> case runInterp (exec a) r of 
 		Right (_,r')-> print r' 
 
+interp :: Program -> Store -> Store
+interp p r = 
+  case parse stm p of
+    [(a,b)] -> case runInterp (exec a) r of 
+		Right (_,r')-> r' 
   
+
+-- factorial "5"
+factorial :: Int -> IO()
+factorial number = 
+  let Just o = lookup "result" $ run "{exit=1; n=num; result=num; WHILE[n NOT_EQUAL exit]{n=n-1; result=result*n;};}" [("num", IntVal number)] in print o
+
+-- fibonacci "5"
+fibonacci :: Int -> IO()
+fibonacci number = 
+  let Just o = lookup "result" $ run "{result=0; n=num; w=0; y=1; WHILE[n NOT_EQUAL w]{z=result+y; result=y; y=z; n=n-1;};}" [("num", IntVal number)] in print o
+-- power "2" "4"
+power :: Int -> Int -> IO()
+power number exp = 
+  let Just o = lookup "result" $ run "{result=1; count=0; n=num; ex=exp; WHILE[count LESS ex]{count=count+1;result=result*n;};}" [("num", IntVal number), ("exp", IntVal exp)] in print o
+
+
+
+
+
+--Command line interpreter
+interpreter = do   
+  putStrLn "Command Line Interpreter"                       
+  putStrLn " _____  _____  _   __ _   _" 
+  putStrLn "/  __ \\/  ___|| | / /| \\ | |"
+  putStrLn "| /  \\/\\ `--. | |/ / |  \\| |"
+  putStrLn "| |     `--. \\|    \\ | . ` |"
+  putStrLn "| \\__/\\/\\__/ /| |\\  \\| |\\  |"
+  putStrLn " \\____/\\____/ \\_| \\_/\\_| \\_/"
+  loop []
+
+loop mem = do
+   putStr "CSKN> "
+   hFlush stdout 
+   str <- getLine
+   if null str
+   then
+      return ()
+   else
+      let mem' = interp(str) (("stdOut", NullVal):mem)
+      in let Just out = lookup "stdOut" mem' in
+        do
+          print out
+          loop mem'
