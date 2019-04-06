@@ -120,21 +120,17 @@ data Tree = SeqNode [Tree]
   -----------------------------------------------------------------------------
   
   -- <program> ::= {<sqnc>}
-  -- <sqnc> ::= <stm>; | <stm>; <sqnc>
-  -- <stm> ::= <expr> | <command>
+  -- <sqnc> ::= <stm>; <sqnc> | <stm>;
+  -- <stm> ::=  <command> |<expr>
 
   -- <comm> ::= <identifier> = <expr> | <IF>[<expr>]<program> | <WHILE>[<expr>]<program>
-  -- <expr> ::= <aexpr> | <bexpr>
+  -- <expr> ::= <bexpr> |<aexpr>
 
   -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
   -- <aterm> ::=  <afactor> | <afactor> * <aterm>  | <afactor> / <aterm> 
-  -- <afactor> ::=  ( <aexpr> ) | + <natural> | - <natural> | <identifier> | <natural> 
+  -- <afactor> ::=  ( <aexpr> ) | + <afactor> | - <afactor> | <identifier> | <natural> 
 
-  -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
-                  | <aterm> GREATER <aexpr> | <aterm> GREATER_EQUAL <aexpr> 
-                  | <aterm> LESS <aexpr> | <aterm> LESS_EQUAL <aexpr> 
-                  | <aterm> EQUAL <aexpr> | <aterm> NOT_EQUAL <aexpr>
-  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val>
+
 
   -- <natural> ::=  0 | 1 | 2 | ...
   -- <bool_val> ::=  TRUE | FALSE
@@ -155,7 +151,7 @@ program = do
 
 
 ----------------------------------PARSING OF SEQUENCES OF STATEMENTS-------------------------------------------
--- <sqnc> ::= <stm>; | <stm>; <sqnc>
+-- <sqnc> ::=  <stm>; <sqnc> | <stm>;
 sqnc :: Parser [Tree]
 sqnc = do 
   s <- stm 
@@ -170,7 +166,7 @@ sqnc = do
 
 
 ----------------------------------PARSING OF STATEMENTS-------------------------------------------
--- <stm> ::= <expr> | <comm>
+ -- <stm> ::=  <command> |<expr>
 stm :: Parser Tree
 stm = do
     c <- comm
@@ -207,17 +203,15 @@ comm = do
 
 
 ----------------------------------PARSING OF EXPRESSIONS-------------------------------------------
--- <expr> ::= <aepr> | <bexpr>
+ -- <expr> ::= <bexpr> |<aexpr>
 expr :: Parser Tree
 expr = do
-   aexpr <|> bexpr
+    bexpr <|> aexpr
 
 
 ----------------------------------PARSING OF ARITHMETIC EXPRESSIONS-------------------------------------------
 -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
--- 				| <aterm> GREATER <aexpr> | <aterm> GREATER_EQUAL <aexpr> 
--- 				| <aterm> LESS <aexpr> | <aterm> LESS_EQUAL <aexpr> 
--- 				| <aterm> EQUAL <aexpr> | <aterm> NOT_EQUAL <aexpr>
+
 aexpr :: Parser Tree
 aexpr = do
   t <- aterm
@@ -227,6 +221,60 @@ aexpr = do
    <|> do symbol "-"
           e <- aexpr
           return (SumNode Minus  t e)
+   <|> return t
+
+
+-- <aterm> ::=  <afactor> | <afactor> * <aterm>  | <afactor> / <aterm> 
+aterm :: Parser Tree
+aterm = do
+  f <- afactor
+  do symbol "*"
+     t <- aterm
+     return (ProdNode Times t f)
+   <|> do symbol "/"
+          t <- aterm
+          return (ProdNode Div t f)
+   <|> return f
+
+
+ -- <afactor> ::=  ( <aexpr> ) | + <afactor> | - <afactor> | <identifier> | <natural> 
+afactor :: Parser Tree
+afactor = 
+  do symbol "("
+     e <- aexpr
+     symbol ")"
+     return e
+     <|> 
+  do symbol "+"
+     a <- afactor
+     return (UnaryNode Plus a)
+     <|> 
+  do symbol "-"
+     a <- afactor
+     return (UnaryNode Minus a)
+     <|> 
+  do 
+     id <-identifier
+     return (VarNode id)
+     <|> 
+  do 
+     n <- natural
+     return (NumNode n)
+
+----------------------------------PARSING OF BOOLEAN EXPRESSIONS-------------------------------------------
+-- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
+--        | <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
+--        | <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
+--        | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
+bexpr :: Parser Tree
+bexpr = do 
+  t <- bterm
+  do symbol "AND"
+     e <- bexpr
+     return (LogicNode And t e)
+   <|> do symbol "OR"
+          e <- bexpr
+          return (LogicNode And t e)
    <|> do symbol "GREATER"
           e <- aexpr
           return (ArithmeticLogicNode Greater t e)
@@ -248,62 +296,15 @@ aexpr = do
    <|> return t
 
 
--- <aterm> ::=  <afactor> | <afactor> * <aterm>  | <afactor> / <aterm> 
-aterm :: Parser Tree
-aterm = do
-  f <- afactor
-  do symbol "*"
-     t <- aterm
-     return (ProdNode Times t f)
-   <|> do symbol "/"
-          t <- aterm
-          return (ProdNode Div t f)
-   <|> return f
-
-
--- <afactor> ::=  ( <aexpr> ) | + <natural> | - <natural> | <identifier> | <natural> 
-afactor :: Parser Tree
-afactor = 
-  do symbol "("
-     e <- aexpr
-     symbol ")"
-     return e
-     <|> 
-  do symbol "+"
-     a <- afactor
-     return (UnaryBoolNode Plus a)
-     <|> 
-  do symbol "-"
-     a <- afactor
-     return (UnaryBoolNode Minus a)
-     <|> 
-  do 
-     id <-identifier
-     return (VarNode id)
-     <|> 
-  do 
-     n <- natural
-     return (NumNode n)
-
-----------------------------------PARSING OF BOOLEAN EXPRESSIONS-------------------------------------------
-  -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
-bexpr :: Parser Tree
-bexpr = do 
-  t <- bterm
-  do symbol "AND"
-     e <- bexpr
-     return (LogicNode And t e)
-   <|> do symbol "OR"
-          e <- bexpr
-          return (LogicNode And t e)
-   <|> return t
-
-
-  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> 
+  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> | <aexpr>
 bterm :: Parser Tree
 bterm = 
+  do 
+     b <- aexpr
+     return b
+     <|> 
   do symbol "("
-     e <- expr
+     e <- bexpr
      symbol ")"
      return e
      <|> 
@@ -590,6 +591,14 @@ eval (ProdNode Div e1 e2) =
 	if v2 == (IntVal 0)
 	  then fail "division by zero"
 	  else return (m_div v1 v2)
+eval (UnaryNode Plus e1) =
+  do 
+    v1 <- eval e1
+    return (v1)
+eval (UnaryNode Minus e1)=
+  do 
+    v1 <- eval e1
+    return (IntVal 0 - v1)
 
 eval (BoolNode n) = do return (BoolVal n)
 eval (LogicNode And e1 e2) =
@@ -641,7 +650,10 @@ eval (ArithmeticLogicNode NotEqual e1 e2) =
     return (not_eq (v1) (v2))
 
 
+
+
 type Program = String
+
 
 run :: Program -> Store -> IO()
 run p r = 
