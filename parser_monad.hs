@@ -127,13 +127,13 @@ data Tree = SeqNode [Tree]
   -- <expr> ::= <aexpr> | <bexpr>
 
   -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
-                  | <aterm> GREATER <aexpr> | <aterm> GREATER_EQUAL <aexpr> 
-                  | <aterm> LESS <aexpr> | <aterm> LESS_EQUAL <aexpr> 
-                  | <aterm> EQUAL <aexpr> | <aterm> NOT_EQUAL <aexpr>
   -- <aterm> ::=  <afactor> | <afactor> * <aterm>  | <afactor> / <aterm> 
   -- <afactor> ::=  ( <aexpr> ) | + <natural> | - <natural> | <identifier> | <natural> 
 
   -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
+                  | <aterm> GREATER <aexpr> | <aterm> GREATER_EQUAL <aexpr> 
+                  | <aterm> LESS <aexpr> | <aterm> LESS_EQUAL <aexpr> 
+                  | <aterm> EQUAL <aexpr> | <aterm> NOT_EQUAL <aexpr>
   -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val>
 
   -- <natural> ::=  0 | 1 | 2 | ...
@@ -215,9 +215,9 @@ expr = do
 
 ----------------------------------PARSING OF ARITHMETIC EXPRESSIONS-------------------------------------------
 -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
--- 				| <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
--- 				| <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
--- 				| <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
+-- 				| <aterm> GREATER <aexpr> | <aterm> GREATER_EQUAL <aexpr> 
+-- 				| <aterm> LESS <aexpr> | <aterm> LESS_EQUAL <aexpr> 
+-- 				| <aterm> EQUAL <aexpr> | <aterm> NOT_EQUAL <aexpr>
 aexpr :: Parser Tree
 aexpr = do
   t <- aterm
@@ -515,7 +515,6 @@ instance Monad Interp where
                Left msg      -> Left msg
                Right (x, r') -> runInterp (k x) r'
   fail msg = Interp $ \_ -> Left msg
-
 
 -- Since the Applicative Monad Proposal (AMP) every Monad must also be an instance of Functor and Applicative.
 instance Functor Interp where
