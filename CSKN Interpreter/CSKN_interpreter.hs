@@ -1,5 +1,10 @@
-import           Control.Applicative
-import           Data.Char
+import Control.Applicative
+import Data.Char
+import Data.List
+import Data.Functor
+import Control.Monad
+import System.IO 
+
 
 -- this declaration states that a parser of type a is a function that takes an input string and produces a list of results, 
 -- each of which is a pair comprising a result value of type a and an output string.
@@ -116,21 +121,17 @@ data Tree = SeqNode [Tree]
   -----------------------------------------------------------------------------
   
   -- <program> ::= {<sqnc>}
-  -- <sqnc> ::= <stm>; | <stm>; <sqnc>
-  -- <stm> ::= <expr> | <command>
+  -- <sqnc> ::= <stm>; <sqnc> | <stm>;
+  -- <stm> ::=  <command> |<expr>
 
-  -- <comm> ::= <identifier> = <expr> | <IF>[<bexpr>]<program> | <WHILE>[<bexpr>]<program>
-  -- <expr> ::= <aepr> | <bexpr>
+  -- <comm> ::= <identifier> = <expr> | <IF>[<expr>]<program> | <WHILE>[<expr>]<program>
+  -- <expr> ::= <bexpr> |<aexpr>
 
   -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
   -- <aterm> ::=  <afactor> | <afactor> * <aterm>  | <afactor> / <aterm> 
-  -- <afactor> ::=  ( <aexpr> ) | + <natural> | - <natural> | <identifier> | <natural> 
+  -- <afactor> ::=  ( <aexpr> ) | + <afactor> | - <afactor> | <identifier> | <natural> 
 
-  -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
-                  | <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
-                  | <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
-                  | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
-  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> | <natural> 
+
 
   -- <natural> ::=  0 | 1 | 2 | ...
   -- <bool_val> ::=  TRUE | FALSE
@@ -151,7 +152,7 @@ program = do
 
 
 ----------------------------------PARSING OF SEQUENCES OF STATEMENTS-------------------------------------------
--- <sqnc> ::= <stm>; | <stm>; <sqnc>
+-- <sqnc> ::=  <stm>; <sqnc> | <stm>;
 sqnc :: Parser [Tree]
 sqnc = do 
   s <- stm 
@@ -166,7 +167,7 @@ sqnc = do
 
 
 ----------------------------------PARSING OF STATEMENTS-------------------------------------------
--- <stm> ::= <expr> | <comm>
+ -- <stm> ::=  <command> |<expr>
 stm :: Parser Tree
 stm = do
     c <- comm
@@ -179,7 +180,7 @@ stm = do
 
 
 ----------------------------------PARSING OF COMMANDS-------------------------------------------
--- <comm> ::= <identifier> = <expr> | <IF>[<bexpr>]<program> | <WHILE>[<bexpr>]<program>
+-- <comm> ::= <identifier> = <expr> | <IF>[<expr>]<program> | <WHILE>[<expr>]<program>
 comm :: Parser Tree
 comm = do 
   var <- identifier
@@ -189,28 +190,29 @@ comm = do
   <|> 
   do symbol "IF"
      symbol "["
-     b <- bexpr
+     b <- expr
      symbol "]"
      s <-  program
      return (CommandNode If b s)
   <|> 
   do symbol "WHILE"
      symbol "["
-     b <- bexpr
+     b <- expr
      symbol "]"
      s <-  program
      return (CommandNode While b s)
 
 
 ----------------------------------PARSING OF EXPRESSIONS-------------------------------------------
--- <expr> ::= <aepr> | <bexpr>
+ -- <expr> ::= <bexpr> |<aexpr>
 expr :: Parser Tree
 expr = do
-  aexpr <|> bexpr 
+    bexpr <|> aexpr
 
 
 ----------------------------------PARSING OF ARITHMETIC EXPRESSIONS-------------------------------------------
 -- <aexpr> ::=  <aterm> | <aterm> + <aexpr> | <aterm> - <aexpr>
+
 aexpr :: Parser Tree
 aexpr = do
   t <- aterm
@@ -236,7 +238,7 @@ aterm = do
    <|> return f
 
 
--- <afactor> ::=  ( <aexpr> ) | + <natural> | - <natural> | <identifier> | <natural> 
+ -- <afactor> ::=  ( <aexpr> ) | + <afactor> | - <afactor> | <identifier> | <natural> 
 afactor :: Parser Tree
 afactor = 
   do symbol "("
@@ -246,11 +248,11 @@ afactor =
      <|> 
   do symbol "+"
      a <- afactor
-     return (UnaryBoolNode Plus a)
+     return (UnaryNode Plus a)
      <|> 
   do symbol "-"
      a <- afactor
-     return (UnaryBoolNode Minus a)
+     return (UnaryNode Minus a)
      <|> 
   do 
      id <-identifier
@@ -261,10 +263,10 @@ afactor =
      return (NumNode n)
 
 ----------------------------------PARSING OF BOOLEAN EXPRESSIONS-------------------------------------------
-  -- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
---                | <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
---                | <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
---                | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
+-- <bexpr> ::=  <bterm> | <bterm> AND <bexpr> | <bterm> OR <bexpr> 
+--        | <bterm> GREATER <aexpr> | <bterm> GREATER_EQUAL <aexpr> 
+--        | <bterm> LESS <aexpr> | <bterm> LESS_EQUAL <aexpr> 
+--        | <bterm> EQUAL <aexpr> | <bterm> NOT_EQUAL <aexpr>
 bexpr :: Parser Tree
 bexpr = do 
   t <- bterm
@@ -295,11 +297,15 @@ bexpr = do
    <|> return t
 
 
-  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> | <natural> 
+  -- <bterm> ::=  ( <bexpr> ) | NOT <bterm> | <identifier> | <bool_val> | <aexpr>
 bterm :: Parser Tree
 bterm = 
+  do 
+     b <- aexpr
+     return b
+     <|> 
   do symbol "("
-     e <- expr
+     e <- bexpr
      symbol ")"
      return e
      <|> 
@@ -314,10 +320,7 @@ bterm =
   do 
      b <- bool_val
      return (BoolNode b)
-     <|>
-  do 
-     n <- natural
-     return (NumNode n) 
+
 
 ----------------------------------TERMINAL PARSERS-------------------------------------------
 -- <natural> ::=  0 | 1 | 2 | ...
@@ -436,103 +439,285 @@ item = P $ \inp ->
 
 
 
-{-___________________________________________________ EVALUATION ______________________________________________________-}
+{-------------------------------------------EVALUATION---------------------------------------------}
+
+-- Definition of Value data type which represents values that can be stored in the store(memory).
+-- A value can be of type Int for arithmetic operations or Bool for logic operations.
+-- Value is a kind of container for boolean or integer values, for example: IntVal 3 or BoolVal False.
+-- In this case IntVal and BoolVal are a wrapper for Int and Bool values respectively. 
+data Value =
+   IntVal  Int
+ | BoolVal Bool
+ | NullVal
+ deriving(Show)
+
+-- Definition of Value as a Num instance (For operations between IntVal) which makes it possible to add/multiply/subtract values of type: IntVal 3 + IntVal 4 = IntVal 7
+instance Num Value where
+  IntVal a + IntVal b = IntVal(a+b)
+  IntVal a * IntVal b = IntVal(a*b) 
+  IntVal a - IntVal b = IntVal(a-b)
+  abs (IntVal a) = IntVal(abs(a))
+  signum(IntVal a) = IntVal(signum(a))
+  fromInteger a = fromInteger a
+
+-- Definition of Value as a Eq instance which makes it possible to confront two IntVal(s) or two BoolVal(s) values;
+-- Example: IntVal 4 == IntVal 4 yelds True
+instance Eq Value where
+  IntVal a == IntVal b = a==b
+  BoolVal a == BoolVal b = a==b
 
 
-type Memory = [(String, String)]
+-- Definition of some fundamental operations between Value data types
+
+-- division (safe)
+m_div :: Value -> Value -> Value
+m_div (IntVal a) (IntVal b) = IntVal(a `div` b)
+
+-- boolean and, or, not
+m_and :: Value -> Value -> Value
+m_and (BoolVal a) (BoolVal b) = BoolVal(a && b)
+m_or :: Value -> Value -> Value
+m_or (BoolVal a) (BoolVal b) = BoolVal(a || b)
+m_not :: Value -> Value
+m_not (BoolVal b) = BoolVal(not b)
+
+-- operators for compare IntVal(s): >, >=, <, <=, ==, /= which yeld a BoolVal: BoolVal True / BoolVal False
+greater :: Value -> Value -> Value
+greater (IntVal a) (IntVal b) = BoolVal(a>b)
+greater_eq :: Value -> Value -> Value
+greater_eq (IntVal a) (IntVal b) = BoolVal(a>=b)
+
+less :: Value -> Value -> Value
+less (IntVal a) (IntVal b) = BoolVal(a<b)
+less_eq :: Value -> Value -> Value
+less_eq (IntVal a) (IntVal b) = BoolVal(a<=b)
+
+eq :: Value -> Value -> Value
+eq (IntVal a) (IntVal b) = BoolVal(a==b)
+not_eq :: Value -> Value -> Value
+not_eq (IntVal a) (IntVal b) = BoolVal(a/=b)
 
 
---Reads the memory, if variables with the same name are in memory it reads the last updated value (STACK mode).
-lookUp :: (Eq a) => a -> [(a,b)] -> Maybe b
-lookUp _key [] = Nothing
-lookUp key ((x,y):xys)
- | key == x = Just y
- | otherwise = lookUp key xys
-
---Executes a sequence of commands, returning the updated Memory. 
-execute :: Tree -> Memory -> Memory
-execute tr r = 
-   case tr of
-      (SeqNode []) -> r
-      (SeqNode (s : ss)) -> execute (SeqNode ss) (execute s r)
-      (StatementNode e) -> execute e r
-      (AssignNode s e) -> (s, evaluate e r) : r
-      (CommandNode If b st) -> 
-         let cond = read(evaluate b r) in 
-            if cond /= False then execute st r else r
-      (CommandNode While b s) -> 
-         let cond = read(evaluate b r) in 
-            if cond /= False then execute (SeqNode [s,CommandNode While b s]) r else r
-      _ -> 
-        ("stdOut", evaluate tr r) : r
+-- Defining the store type which is a list of tuples: String which represents the name of a variable and Value (defined above) that is the the value stored in the corresponding variable name.
+type Store = [(String, Value)]
 
 
-{-Evaluates the different Trees (logic and arithmetic), converting the value received by the type specific functions (boolean or integer) into
-  a String storable in Memory-}
-evaluate :: Tree -> Memory -> String 
---arithmetic
-evaluate (NumNode n) r = show (a_evaluate (NumNode n) r)
-evaluate (SumNode Plus e1 e2) r = show (a_evaluate (SumNode Plus e1 e2) r) 
-evaluate (SumNode Minus e1 e2) r = show (a_evaluate (SumNode Minus e1 e2) r)
-evaluate (UnaryNode Plus e1) r = show (a_evaluate (UnaryNode Plus e1) r )
-evaluate (UnaryNode Minus e1) r = show (a_evaluate (UnaryNode Minus e1) r)
-evaluate (ProdNode Times e1 e2) r = show (a_evaluate (ProdNode Times e1 e2) r) 
-evaluate (ProdNode Div e1 e2) r = show (a_evaluate (ProdNode Div e1 e2) r) 
---bool
-evaluate (BoolNode b) r = show(b_evaluate (BoolNode b) r)
-evaluate (LogicNode And e1 e2) r = show(b_evaluate (LogicNode And e1 e2) r)
-evaluate (LogicNode Or e1 e2) r = show(b_evaluate (LogicNode Or e1 e2) r)
-evaluate (UnaryBoolNode Not e1) r = show(b_evaluate (UnaryBoolNode Not e1) r)
-evaluate (ArithmeticLogicNode Greater e1 e2) r = show(b_evaluate (ArithmeticLogicNode Greater e1 e2) r)
-evaluate (ArithmeticLogicNode GreaterEqual e1 e2) r = show(b_evaluate (ArithmeticLogicNode GreaterEqual e1 e2) r)
-evaluate (ArithmeticLogicNode Less e1 e2) r = show(b_evaluate (ArithmeticLogicNode Less e1 e2) r)
-evaluate (ArithmeticLogicNode LessEqual e1 e2) r = show(b_evaluate (ArithmeticLogicNode LessEqual e1 e2) r)
-evaluate (ArithmeticLogicNode Equal e1 e2) r = show(b_evaluate (ArithmeticLogicNode Equal e1 e2) r)
-evaluate (ArithmeticLogicNode NotEqual e1 e2) r = show(b_evaluate (ArithmeticLogicNode NotEqual e1 e2) r)
---var
-evaluate (VarNode x) r = case lookUp x r of
-  Nothing -> error ("unbound variable `" ++ x ++ "'")
-  Just v -> v
+-- there are two "effects" that are candidates for being captured by a monadic structure:
+-- 		1. The passing around and updating of the store.
+-- 		2. Aborting running the program when a run-time error is encountered. (In the implementation above, the interpreter simply crashes when such an error occurs.)
+-- The first effect is typically captured by a state monad, the second by an error monad.
 
---Evaluates arithmetic expressions returning the resulting integer value
-a_evaluate ::  Tree -> Memory -> Int
-a_evaluate (NumNode n) r = n
-a_evaluate (VarNode x) r = case lookUp x r of
- Nothing -> error ("unbound variable `" ++ x ++ "'")
- Just v -> read v
-a_evaluate (SumNode Plus e1 e2) r = a_evaluate e1 r + a_evaluate e2 r
-a_evaluate (SumNode Minus e1 e2) r = a_evaluate e1 r - a_evaluate e2 r
-a_evaluate (UnaryNode Plus e) r = 0 +( a_evaluate e r)
-a_evaluate (UnaryNode Minus e) r = 0 -(a_evaluate e r)
-a_evaluate (ProdNode Times e1 e2) r = a_evaluate e1 r * a_evaluate e2 r
-a_evaluate (ProdNode Div e1 e2) r = a_evaluate e1 r `div` a_evaluate e2 r
+-- We can use monad transformers to construct a composite monad for our two effects by combining a basic state monad and a basic error monad.
+-- Here, however, we simply construct the composite monad in one go.
+newtype Interp a = Interp { runInterp :: Store -> Either String (a, Store) }
 
---Evaluates logic expressions returning the resulting boolean value
-b_evaluate ::  Tree -> Memory -> Bool
-b_evaluate (BoolNode b) r = b
-b_evaluate (VarNode x) r = case lookUp x r of
- Nothing -> error ("unbound variable `" ++ x ++ "'")
- Just v -> read v
-b_evaluate (LogicNode And e1 e2) r = b_evaluate e1 r && b_evaluate e2 r
-b_evaluate (LogicNode Or e1 e2) r = b_evaluate e1 r || b_evaluate e2 r
-b_evaluate (ArithmeticLogicNode Greater e1 e2) r = a_evaluate e1 r > a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode GreaterEqual e1 e2) r = a_evaluate e1 r >= a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode Less e1 e2) r = a_evaluate e1 r < a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode LessEqual e1 e2) r = a_evaluate e1 r <= a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode Equal e1 e2) r = a_evaluate e1 r == a_evaluate e2 r
-b_evaluate (ArithmeticLogicNode NotEqual e1 e2) r = a_evaluate e1 r /= a_evaluate e2 r
+instance Monad Interp where
+  return x = Interp $ \r -> Right (x, r)
+  i >>= k  = Interp $ \r -> case runInterp i r of
+               Left msg      -> Left msg
+               Right (x, r') -> runInterp (k x) r'
+  fail msg = Interp $ \_ -> Left msg
+
+-- Since the Applicative Monad Proposal (AMP) every Monad must also be an instance of Functor and Applicative.
+instance Functor Interp where
+  fmap = liftM -- imported from Control.Monad
+
+instance Applicative Interp where
+  pure  = return
+  (<*>) = ap -- imported from Control.Monad
 
 
---rename of the String type in Program type
+-- For reading from and writing to the store, we introduce effectful functions rd and wr
+-- Note that rd produces a Left-wrapped error message if a variable lookup fails.
+rd :: String -> Interp Value
+rd x = Interp $ \r -> case lookup x r of
+         Nothing -> Left ("unbound variable `" ++ x ++ "'")
+         Just v  -> Right (v, r)
+
+wr :: String -> Value -> Interp ()
+wr x v = Interp $ \r -> Right ((), (x, v) : r)
+
+
+-- For the execution of statements we have
+exec :: Tree -> Interp ()
+exec (SeqNode [])       = 
+  do return ()
+exec (SeqNode (s : ss)) = 
+  do 
+    exec s
+    exec (SeqNode ss)
+exec(StatementNode e) = do exec e    
+exec (AssignNode x e) = 
+  do 
+    v <- eval e
+    wr x v
+exec (CommandNode While e s) = 
+  do 
+    v <- eval e
+    when (v /= (BoolVal False)) (exec (SeqNode [s,CommandNode While e s]))
+exec (CommandNode If e s) = 
+  do 
+    v <- eval e
+    when (v /= (BoolVal False)) (exec s)
+exec (n) = 
+  do 
+    v <- eval n
+    wr "stdOut" v 
+
+-- The monadic version of the expression evaluator
+-- In the case of a division by zero that results in an error message being produced through the Monad-method fail,
+-- which, for Interp, reduces to wrapping the message in a Left-value
+eval :: Tree -> Interp Value
+eval (NumNode n) = do return (IntVal n)
+eval (VarNode x) = do rd x
+eval (SumNode Plus e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (v1 + v2)
+eval (SumNode Minus e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (v1 - v2)
+eval (ProdNode Times e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (v1 * v2)
+eval (ProdNode Div e1 e2) =
+  do
+    v1 <- eval e1
+    v2 <- eval e2
+    if v2 == (IntVal 0)
+        then fail "division by zero"
+        else return (m_div v1 v2)
+eval (UnaryNode Plus e1) =
+  do 
+    v1 <- eval e1
+    return (v1)
+eval (UnaryNode Minus e1)=
+  do 
+    v1 <- eval e1
+    return (IntVal 0 - v1)
+
+eval (BoolNode n) = do return (BoolVal n)
+eval (LogicNode And e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (m_and (v1) (v2))
+eval (LogicNode Or e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (m_or (v1) (v2))
+eval (UnaryBoolNode Not e1) =
+  do 
+    v1 <- eval e1
+    return (m_not (v1))
+
+eval (ArithmeticLogicNode Greater e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (greater (v1) (v2))
+eval (ArithmeticLogicNode GreaterEqual e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (greater_eq (v1) (v2))
+
+eval (ArithmeticLogicNode Less e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (less (v1) (v2))
+eval (ArithmeticLogicNode LessEqual e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (less_eq (v1) (v2))
+
+eval (ArithmeticLogicNode Equal e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (eq (v1) (v2))
+eval (ArithmeticLogicNode NotEqual e1 e2) =
+  do 
+    v1 <- eval e1
+    v2 <- eval e2
+    return (not_eq (v1) (v2))
+
+
+read_variable_value :: String -> Store -> Value
+read_variable_value v r = 
+  case lookup v r of 
+    Just o -> o
+    Nothing -> error ("unbound variable `" ++ v ++ "'")
+
 type Program = String
 
-type VarName = String
-type ProgramInput = String
-type ProgramOutput = String
+run :: Program -> Store -> Store
+run p r = 
+  case parse program p of
+    [(a,b)] -> case runInterp (exec a) r of Right (_,r')->  r' 
 
-run :: Program -> Memory -> Memory
-run p env = case (parse program p) of
-  [(t, [])]  -> execute (t) env
-  [(_, out)] -> error ("Unused input " ++ out)
-  []         -> error "Invalid input"
 
+debug :: Program -> Store -> IO()
+debug p r = 
+  case parse program p of
+    [(a,b)] -> case runInterp (exec a) r of Right (_,r')-> print r' 
+
+interp :: Program -> Store -> Store
+interp p r = 
+  case parse stm p of
+    [(a,b)] -> case runInterp (exec a) r of Right (_,r')-> r' 
+  
+
+-- factorial "5"
+factorial :: Int -> IO()
+factorial number = 
+  let Just o = lookup "result" $ run "{exit=1; n=num; result=num; WHILE[n NOT_EQUAL exit]{n=n-1; result=result*n;};}" [("num", IntVal number)] in print o
+
+-- fibonacci "5"
+fibonacci :: Int -> IO()
+fibonacci number = 
+  let Just o = lookup "result" $ run "{result=0; n=num; w=0; y=1; WHILE[n NOT_EQUAL w]{z=result+y; result=y; y=z; n=n-1;};}" [("num", IntVal number)] in print o
+
+-- power "2" "4"
+power :: Int -> Int -> IO()
+power number exp = 
+  let Just o = lookup "result" $ run "{result=1; count=0; n=num; ex=exp; WHILE[count LESS ex]{count=count+1;result=result*n;};}" [("num", IntVal number), ("exp", IntVal exp)] in print o
+
+
+
+
+
+--Command line interpreter
+main = do   
+  putStrLn "Command Line Interpreter"                       
+  putStrLn " _____  _____  _   __ _   _" 
+  putStrLn "/  __ \\/  ___|| | / /| \\ | |"
+  putStrLn "| /  \\/\\ `--. | |/ / |  \\| |"
+  putStrLn "| |     `--. \\|    \\ | . ` |"
+  putStrLn "| \\__/\\/\\__/ /| |\\  \\| |\\  |"
+  putStrLn " \\____/\\____/ \\_| \\_/\\_| \\_/"
+  putStrLn ""
+  putStrLn ""
+  loop []
+
+loop mem = do
+   putStr "CSKN> "
+   hFlush stdout 
+   str <- getLine
+   if null str
+   then
+      return ()
+   else
+      let mem' = interp(str) (("stdOut", NullVal):mem)
+      in let Just out = lookup "stdOut" mem' in
+        do
+          print out
+          loop mem'
