@@ -591,7 +591,7 @@ eval (ProdNode Div e1 e2) =
     v2 <- eval e2
     if v2 == (IntVal 0)
         then fail "division by zero"
-        else return (m_div v1 v2)
+        else return (m_div v2 v1)
 eval (UnaryNode Plus e1) =
   do 
     v1 <- eval e1
