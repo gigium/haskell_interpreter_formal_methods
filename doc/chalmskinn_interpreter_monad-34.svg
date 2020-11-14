@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="596pt" height="843pt" viewBox="0 0 596 843">
+<g enable-background="new">
+<clipPath id="cp1575">
+<path d="M 0 0 L 596 0 L 596 842.959 L 0 842.959 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp1575)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-27817.586)" d="M 0 37059 L 794 37059 L 794 38182 L 0 38182 Z " fill="#ffffff"/>
+<path transform="matrix(.7506297,0,0,.7506297,0,-27817.586)" d="M 0 37059 L 794 37059 L 794 38182 L 0 38182 Z " fill="#ffffff"/>
+<path transform="matrix(.7506297,0,0,.7506297,0,-27817.586)" d="M 0 0 L 794 0 L 794 44920 L 0 44920 Z " fill="#ffffff"/>
+<path transform="matrix(.7506297,0,0,.7506297,0,-27817.586)" d="M 0 37059 L 794 37059 L 794 38182 L 0 38182 Z " fill="#ffffff"/>
+<path transform="matrix(.7506297,0,0,.7506297,0,-27817.586)" d="M 0 37153 L 794 37153 L 794 38182 L 0 38182 Z " fill="#ffffff"/>
+<path transform="matrix(.7506297,0,0,.7506297,0,-27817.586)" d="M 76 37153 L 719 37153 L 719 37185 L 76 37185 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp1576">
+<path d="M 57.04786 70.56055 L 539.70278 70.56055 L 539.70278 94.58008 L 57.04786 94.58008 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp1576)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-27817.586)" d="M 83 37160 L 295 37160 L 295 37176 L 83 37176 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp1577">
+<path d="M 57.04786 70.56055 L 539.70278 70.56055 L 539.70278 94.58008 L 57.04786 94.58008 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp1577)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -27817.586)" font-size="13.33" font-family="Consolas"><tspan y="37173" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308 126.56094 133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856 185.18387 192.51174 199.8396 207.16747 214.49533 221.8232 229.15106 236.47893 243.8068 251.13466 258.46253 265.7904 273.11827 280.4461 287.774">    return (not_eq (v1) (v2))</tspan></text>
+</g>
+<clipPath id="cp1578">
+<path d="M 57.04786 70.56055 L 539.70278 70.56055 L 539.70278 94.58008 L 57.04786 94.58008 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp1578)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -27817.586)" font-size="13.33" font-family="TimesNewRomanPSMT"><tspan y="37173" x="295.09376"> </tspan></text>
+</g>
+<clipPath id="cp1579">
+<path d="M 0 0 L 596 0 L 596 842.959 L 0 842.959 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp1579)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -27817.586)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="37201" x="75.59375"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -27817.586)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="37223" x="75.59375"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -27817.586)" font-size="32" font-family="TimesNewRomanPS" font-weight="bold"><tspan y="37287" x="75.59375"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -27817.586)" font-size="32" font-family="TimesNewRomanPS" font-weight="bold"><tspan y="37287" x="175.59375"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -27817.586)" font-size="16" font-family="TimesNewRomanPS" font-style="italic"><tspan y="38128" x="75.59375 79.59375 83.59375 87.59375 91.59375 95.59375 99.59375 103.59375 107.59375 111.59375 115.59375 119.59375 123.59375">             </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 -.18765743 .7506297 0 -27817.586)" font-size="16" font-family="Gautami"><tspan y="38128" x="9659.594">&#x200b;</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -27817.586)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="38128" x="127.59375 131.59375 139.59375"> 34</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -27817.586)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="38128" x="147.59375"> </tspan></text>
+</g>
+</g>
+</svg>

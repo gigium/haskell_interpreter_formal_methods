@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="596pt" height="843pt" viewBox="0 0 596 843">
+<g enable-background="new">
+<clipPath id="cp130">
+<path d="M 0 0 L 596 0 L 596 842.9575 L 0 842.9575 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp130)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 8984 L 794 8984 L 794 10107 L 0 10107 Z " fill="#ffffff"/>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 8984 L 794 8984 L 794 10107 L 0 10107 Z " fill="#ffffff"/>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 794 0 L 794 44920 L 0 44920 Z " fill="#ffffff"/>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 8984 L 794 8984 L 794 10107 L 0 10107 Z " fill="#ffffff"/>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 9078 L 794 9078 L 794 10107 L 0 10107 Z " fill="#ffffff"/>
+<text fill="#434343" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="18.66" font-family="TimesNewRomanPSMT"><tspan y="9118" x="75.59375 92.182147 101.51027 110.838397 119.11893 128.44705">Monads</tspan></text>
+<text fill="#434343" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="18.66" font-family="TimesNewRomanPSMT"><tspan y="9118" x="135.70313"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9146" x="75.59375 87.14575 91.14575 105.36975 113.36975 121.36975 128.47376 136.47376 140.47376 152.02576 157.35376 164.45777 172.45777 178.68177 182.68177 189.78577 193.78577 201.78577 208.88977 213.33777 221.33777 228.44178 232.44178 240.44178 245.76978 249.76978 256.87379 260.87379 267.97779 275.97779 288.42579 296.42579 304.42579 308.87379 315.97779 320.42579 324.87379 332.87379 340.87379 344.87379 356.42579 360.87379 365.32179 373.32179 377.32179 384.42579 388.42579 396.42579 403.5298 408.8578 413.3058 417.75379 424.8578 432.8578 437.3058 444.4098 449.7378 453.7378 460.8418 468.8418 476.8418 481.2898 488.3938 496.3938 500.8418 504.8418 508.8418 520.3938 524.3938 536.8418 544.8418 552.8418 559.9458 567.9458 571.9458 584.3938 592.3938 598.6178 603.0658 607.0658 615.0658 622.1698 627.4978 631.9458 639.9458 647.0498 651.0498 659.0498 667.0498 671.4978 679.4978 683.4978">A Monad wraps a value or a computation with a particular context. A monad must define both a</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9146" x="690.53128"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9168" x="75.59375 88.04175 95.14575 102.249759 110.249759 116.473758 120.473758 128.47376 133.80176 137.80176 149.35376 154.68177 161.78577 169.78577 177.78577 182.23377 190.23377 198.23377 202.23377 210.23377 218.23377 223.56177 236.00977 243.11377 247.56177 251.56177 259.56178 266.66578 271.11378 279.11378 286.21778 292.44178 296.44178 300.88978 308.88978 312.88978 317.33778 325.33778 332.44178 336.44178 343.54579 351.54579 359.54579 363.99378 371.09779 379.09779 383.54579 387.54579 391.54579 398.64979 406.64979 414.64979 418.64979 425.75379 429.75379 441.3058 448.4098 456.4098 460.4098 468.4098 473.7378 477.7378 484.8418 492.8418 505.2898 513.2898 517.7378 525.7378 530.1858 538.1858 546.1858 550.1858 557.2898 565.2898 577.7378 585.7378 593.7378 598.1858 605.2898 609.7378 614.1858 622.1858 630.1858 636.4098 640.4098 651.9618 656.4098 660.8578 668.8578 673.3058 681.3058 685.3058 689.7538 697.7538">means of wrapping normal values in the context, and a way of combining computations within the</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9168" x="704.78128"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9190" x="75.59375 82.697757 90.697757 98.697757 103.14575 110.249759 118.249759 122.697757">context.</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9190" x="126.6875"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9212" x="75.59375 81.81775 89.81775 96.04175 100.489749 104.489749 108.937747 113.38574 121.38574 128.48975 132.48975 144.04175 148.48975 152.93775 160.93775 164.93775 170.26575 178.26575 186.26575 193.36975 197.81775 205.81775 211.14575 217.36975 221.36975 228.47376 236.47376 244.47376 248.47376 255.57776 263.57777 271.57777 276.02577 280.47377 287.57777 294.68177 299.12977 303.57777 311.57777 318.68177 322.68177 328.00978 336.00978 344.00978 351.11378 355.56178 363.56178 368.88978 375.11378 379.11378 383.11378 394.66578 401.76979 407.99378 415.99378 423.09779 427.54579 431.99378 435.99378 441.32179 448.42579 456.42579 461.75379 468.8578 475.0818 482.1858 490.1858 494.6338 500.8578 504.8578 517.3058 525.3058 533.3058 540.4098 548.4098 554.6338 558.6338 570.1858 574.6338 579.0818 587.0818 591.0818 598.1858 602.1858 606.6338 614.6338 622.6338 629.7378 633.7378 640.8418 645.2898 652.3938 658.6178 664.8418 668.8418 672.8418 678.1698 682.6178 686.6178 694.6178 701.7218">Just like with functors and applicative functors, Haskell represents monads with a type class. It has</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9212" x="707.875"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9234" x="75.59375 80.04175 91.59375 99.59375 103.59375 108.92175 116.92175 124.92175 132.02576 136.47376 140.92176 148.92176 156.92176 163.14575">two functions:</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9234" x="167.57813"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9256" x="75.59375"> </tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 76 9262 L 719 9262 L 719 9348 L 76 9348 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp131">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp131)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9269 L 346 9269 L 346 9285 L 83 9285 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp132">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp132)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9287 L 214 9287 L 214 9303 L 83 9303 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp133">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp133)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9305 L 324 9305 L 324 9321 L 83 9321 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp134">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp134)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9323 L 178 9323 L 178 9339 L 83 9339 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp135">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp135)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9282" x="82.59375 89.921619 97.24948 104.57735 111.90521">class</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#333333"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9282" x="119.23308">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9282" x="119.23308"> </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9282" x="126.56094">&#x200b;</tspan></text>
+<text fill="#445588" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9282" x="126.56094 133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856 185.18387 192.51174 199.8396">Applicative</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#445588"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9282" x="207.16747">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9282" x="207.16747 214.49533 221.8232 229.15106 236.47893 243.8068"> m =&#x003e; </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9282" x="251.13466">&#x200b;</tspan></text>
+<text fill="#445588" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9282" x="251.13466 258.46253 265.7904 273.11827 280.4461">Monad</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#445588"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9282" x="287.774">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9282" x="287.774 295.10188 302.42973"> m </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9282" x="309.75758">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9282" x="309.75758 317.08546 324.4133 331.74116 339.06904">where</tspan></text>
+</g>
+<clipPath id="cp136">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp136)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9282" x="346.39064"> </tspan></text>
+</g>
+<clipPath id="cp137">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp137)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9282" x="353.70314"> </tspan></text>
+</g>
+<clipPath id="cp138">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp138)">
+<text fill="#990000" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9300" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308">return</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#990000"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9300" x="126.56094">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9300" x="126.56094 133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856 185.18387 192.51174 199.8396 207.16747"> :: a -&#x003e; m a</tspan></text>
+</g>
+<clipPath id="cp139">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp139)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9300" x="214.48438"> </tspan></text>
+</g>
+<clipPath id="cp140">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp140)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9300" x="221.79688"> </tspan></text>
+</g>
+<clipPath id="cp141">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp141)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9318" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308 126.56094 133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856 185.18387 192.51174 199.8396 207.16747 214.49533 221.8232 229.15106 236.47893 243.8068 251.13466 258.46253 265.7904 273.11827 280.4461 287.774 295.10188 302.42973 309.75758 317.08546">(&#x003e;&#x003e;=) :: m a -&#x003e; (a -&#x003e; m b) -&#x003e; m b</tspan></text>
+</g>
+<clipPath id="cp142">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp142)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9318" x="324.40626"> </tspan></text>
+</g>
+<clipPath id="cp143">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp143)">
+<text fill="#990000" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9336" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308">return</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#990000"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9336" x="126.56094">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9336" x="126.56094 133.88881 141.21668 148.54454 155.8724 163.20027 170.52814"> = pure</tspan></text>
+</g>
+<clipPath id="cp144">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp144)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9336" x="177.84375"> </tspan></text>
+</g>
+<clipPath id="cp145">
+<path d="M 57.04786 208.6753 L 539.70278 208.6753 L 539.70278 273.2295 L 57.04786 273.2295 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp145)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="TimesNewRomanPSMT"><tspan y="9336" x="185.15625"> </tspan></text>
+</g>
+<clipPath id="cp146">
+<path d="M 0 0 L 596 0 L 596 842.9575 L 0 842.9575 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp146)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9364" x="75.59375"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9386" x="75.59375 85.36975 93.36975 100.473758 104.92175 108.92175 113.36975 119.59375 123.59375 127.59375 134.69776 138.69776 151.14575 159.14575 167.14575 174.24976 182.24976 186.24976 190.69776 196.92176 200.92176 208.02576 216.02576 220.02576 227.12976 235.12976 243.12976 247.57776 252.02576 259.12977 266.23377 270.68177 275.12977 283.12977 290.23377 294.23377 298.68177 306.68177 314.68177 321.78578 325.78578 338.23377 342.23377 346.68177 354.68177 361.78578 366.23377 370.23377 376.45777 384.45777 392.45777 400.45777 408.45777 413.78578 418.23377 424.45777 428.45777 433.78578 440.88978 445.33778 453.33778 458.66578 466.66578 470.66578 477.76979 485.76979 493.76979 497.76979 506.79377 515.81777 524.84176 528.84176 534.16976 542.16976 550.16976 557.27377 561.72177 566.16976 574.16976 582.16976 588.39376 592.39376 600.39376 605.72177 609.72177 614.16976 622.16976 629.27377 633.27377 639.49777 647.49777 654.60177 661.70578 666.15377 671.48178 675.92977 683.03378">That is, a monad is an applicative type m that supports return and &#x003e;&#x003e;= functions of the specified</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9386" x="690.9531"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9408" x="75.59375 80.04175 88.04175 96.04175 103.14575 109.36975 113.36975 117.36975 127.14575 135.14575 142.24976 146.24976 154.24976 161.35376 166.68177 173.78577 181.78577 186.23377 190.68177 194.68177 202.68177 209.78577 215.11377 219.56177 227.56177 232.00977 236.45777 240.90576 248.90576 256.90577 260.90577 266.23377 273.33778 277.78578 285.78578 291.11378 299.11378 303.11378 312.13777 316.13777 324.13777 332.13777 337.46577 344.56977 348.56977 361.01777 368.12178 375.22578 383.22578 389.44978 393.44978 397.89778 405.89778 413.00178 417.44978 421.44978 426.77778 433.88179 438.32978 446.32978 451.65779 459.65779 463.65779 468.10578 474.32978 478.32978 486.32978 494.32978 499.65779 512.1058 519.2098 523.6578 528.1058 536.1058 540.1058 544.5538 552.5538 558.7778 563.22579 567.22579 574.3298 582.3298 590.3298 594.7778 602.7778 609.8818 615.2098 619.2098 627.2098 634.3138 646.7618 653.8658 657.8658 663.1938 671.1938 676.5218 680.5218 684.9698 692.9698">types. The default definition return = pure means that return is normally just another name for the</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9408" x="699.9844"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9430" x="75.59375 82.697757 90.697757 98.697757 103.14575 107.59375 114.697757 121.80176 126.249759 130.69776 138.69776 145.80176 149.80176 155.12976 163.12976 171.12976 178.23377 182.68177 187.12976 195.12976 203.12976 207.12976 215.12976 223.12976 228.45777 235.56177 239.56177 243.56177 251.56177 259.56178 264.00978 268.00978 275.11378 282.21778 290.21778 294.21778 302.21778 309.32179 313.32179 321.32179 329.32179 336.42579 341.75379 347.0818 351.5298 359.5298 367.5298 374.6338 382.6338 386.6338 391.0818 399.0818 403.0818 407.5298 415.5298 421.75379 426.20179 433.3058 441.3058 448.4098 455.5138 461.7378 465.7378 473.7378 480.8418 487.9458 492.3938 499.4978 504.8258 511.9298 516.3778 520.8258 528.8258 536.8258 543.0498 547.0498 551.4978 556.8258 560.8258 568.8258 575.9298 582.1538 586.6018 591.9298 599.0338 607.0338">applicative function pure, but can be overridden in instances declarations if desired.</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9430" x="610.9531"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9452" x="75.59375 84.48975 92.48975 96.93775 101.38575 109.38575 120.93775 125.38575 133.38574 141.38574 145.38574 149.83374 157.83374 164.93775 168.93775 183.16175 190.26575 198.26575 206.26575 213.36975 217.36975 224.47376 232.47376 239.57776 252.02576 260.02577 264.47377 271.57777 275.57777 279.57777 284.02577 292.02577 299.12977 303.12977 317.35377 324.45777 332.45777 340.45777 347.56178 351.56178 365.78578 373.78578 381.78578 388.88978 396.88978 400.88978 405.33778 411.56178 415.56178 423.56178 430.66578 435.99378 440.44178 448.44178 455.54579 463.54579 467.54579 471.99378 479.99378 483.99378 488.44178 496.44178 503.54579 507.54579 512.8738 520.8738 525.3218 529.7698 537.7698 549.3218 553.7698 561.7698 569.7698 573.7698 585.3218 592.4258 600.4258">Following the Maybe example, the Maybe Monad is defined in the following way:</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9452" x="604.8125"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9474" x="75.59375"> </tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 76 9480 L 719 9480 L 719 9566 L 76 9566 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp147">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp147)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9487 L 273 9487 L 273 9503 L 83 9503 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp148">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp148)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9505 L 434 9505 L 434 9521 L 83 9521 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp149">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp149)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9523 L 251 9523 L 251 9539 L 83 9539 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp150">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp150)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9541 L 229 9541 L 229 9557 L 83 9557 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp151">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp151)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9500" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308 126.56094 133.88881">instance</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#333333"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9500" x="141.21668">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9500" x="141.21668"> </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9500" x="148.54454">&#x200b;</tspan></text>
+<text fill="#445588" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9500" x="148.54454 155.8724 163.20027 170.52814 177.856">Monad</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#445588"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9500" x="185.18387">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9500" x="185.18387"> </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9500" x="192.51174">&#x200b;</tspan></text>
+<text fill="#445588" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9500" x="192.51174 199.8396 207.16747 214.49533 221.8232">Maybe</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#445588"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9500" x="229.15106">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9500" x="229.15106"> </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9500" x="236.47893">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9500" x="236.47893 243.8068 251.13466 258.46253 265.7904">where</tspan></text>
+</g>
+<clipPath id="cp152">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp152)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9500" x="273.10939"> </tspan></text>
+</g>
+<clipPath id="cp153">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp153)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9500" x="280.42189"> </tspan></text>
+</g>
+<clipPath id="cp154">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp154)">
+<text fill="#999988" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-style="italic"><tspan y="9518" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308 126.56094 133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856 185.18387 192.51174 199.8396 207.16747 214.49533 221.8232 229.15106 236.47893 243.8068 251.13466 258.46253 265.7904 273.11827 280.4461 287.774 295.10188 302.42973 309.75758 317.08546 324.41334 331.74119 339.06904 346.3969 353.7248 361.05268 368.38056 375.70845 383.03633 390.3642 397.69209 405.01997 412.34785 419.67573 427.0036">-- (&#x003e;&#x003e;=) :: Maybe a -&#x003e; (a -&#x003e; Maybe b) -&#x003e; Maybe b</tspan></text>
+</g>
+<clipPath id="cp155">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp155)">
+<text fill="#999988" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-style="italic"><tspan y="9518" x="434.32814"> </tspan></text>
+</g>
+<clipPath id="cp156">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp156)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9518" x="441.64064"> </tspan></text>
+</g>
+<clipPath id="cp157">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp157)">
+<text fill="#445588" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9536" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308 126.56094">Nothing</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#445588"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9536" x="133.88881">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9536" x="133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856 185.18387 192.51174"> &#x003e;&#x003e;= _ = </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9536" x="199.8396">&#x200b;</tspan></text>
+<text fill="#445588" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9536" x="199.8396 207.16747 214.49533 221.8232 229.15106 236.47893 243.8068">Nothing</tspan></text>
+</g>
+<clipPath id="cp158">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp158)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9536" x="251.125"> </tspan></text>
+</g>
+<clipPath id="cp159">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp159)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9536" x="258.4375"> </tspan></text>
+</g>
+<clipPath id="cp160">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp160)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9554" x="82.59375">(</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9554" x="89.921619">&#x200b;</tspan></text>
+<text fill="#445588" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9554" x="89.921619 97.24948 104.57735 111.90521">Just</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#445588"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9554" x="119.23308">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9554" x="119.23308 126.56094 133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856 185.18387 192.51174 199.8396 207.16747 214.49533 221.8232"> x) &#x003e;&#x003e;= f = f x</tspan></text>
+</g>
+<clipPath id="cp161">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp161)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9554" x="229.14063"> </tspan></text>
+</g>
+<clipPath id="cp162">
+<path d="M 57.04786 372.3125 L 539.70278 372.3125 L 539.70278 436.8667 L 57.04786 436.8667 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp162)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="TimesNewRomanPSMT"><tspan y="9554" x="236.45313"> </tspan></text>
+</g>
+<clipPath id="cp163">
+<path d="M 0 0 L 596 0 L 596 842.9575 L 0 842.9575 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp163)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9582" x="75.59375"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9604" x="75.59375 87.14575 93.36975 97.36975 105.36975 112.473758 117.80176 122.249759 130.24976 137.35376 145.35376 149.35376 153.80176 161.80176 165.80176 170.24976 178.24976 185.35376 189.35376 195.57776 200.02576 207.12976 215.12976 223.12976 230.23377 235.56177 243.56177 247.56177 255.56177 260.88978 267.99378 272.44178 280.44178 288.44178 295.54579 299.54579 303.54579 307.99378 315.99378 323.09779 327.09779 335.09779 339.54579 347.54579 355.54579 359.54579 367.54579 375.54579 382.64979 387.97779 395.0818 399.5298 407.5298 412.8578 416.8578 422.1858 430.1858 435.5138 439.5138 443.9618 451.9618 459.0658 463.0658 477.2898 484.3938 492.3938 500.3938 507.4978 511.4978 515.9458 523.9458 531.9458 539.0498 543.0498 547.4978 553.7218 557.7218 565.7218 572.8258 578.1538 582.6018 590.6018 597.7058 605.7058 609.7058 617.7058 623.9298 628.3778 636.3778 644.3778 648.3778 656.3778 663.4818 667.9298 672.3778 679.4818 684.8098">As defined in the standard prelude, the bind operator for the Maybe type is defined using pattern</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9604" x="692.7344"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9626" x="75.59375 88.04175 95.14575 99.59375 106.697757 114.697757 119.14575 127.14575 135.14575 139.14575 144.47376 151.57776 156.02576 164.02576 171.12976 176.45777 180.45777 184.90576 192.90576 200.00977 208.00977 212.00977 219.11377 226.21778 232.44178 239.54578 243.54578 250.64978 258.64979 265.75379 270.20179 278.20179 284.42579 288.87379 295.09779 299.09779 304.42579 312.42579 317.75379 321.75379 327.97779 332.42579 344.87379 352.87379 357.32179 361.76979 368.87379 373.32179 377.76979 385.76979">matching rather than case analysis for simplicity.</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9626" x="389.71876"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9648" x="75.59375 87.14575 93.36975 97.36975 104.473758 112.473758 116.473758 123.57776 131.57776 138.68177 151.12976 159.12976 163.57776 170.68177 174.68177 186.23377 193.33777 197.33777 205.33777 212.44178 217.76978 222.21778 230.21778 237.32178 241.32178 245.76978 253.76978 260.87379 264.87379 270.20179 278.20179 286.20179 293.3058 297.75379 302.20179 310.20179 318.20179 322.20179 330.20179 337.3058 341.75379 347.0818 351.0818 355.5298 363.5298 367.5298 371.97779 379.97779 387.0818 391.0818 396.4098 404.4098 408.8578 413.3058 421.3058 432.8578 437.3058 445.3058 453.3058 457.3058 469.75379 476.8578 484.8578 492.8578 499.9618 505.2898">As an example we define the function half in the following manner:</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9648" x="509.67189"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9670" x="75.59375"> </tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 76 9676 L 719 9676 L 719 9744 L 76 9744 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp164">
+<path d="M 57.04786 519.43606 L 539.70278 519.43606 L 539.70278 570.479 L 57.04786 570.479 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp164)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9683 L 214 9683 L 214 9699 L 83 9699 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp165">
+<path d="M 57.04786 519.43606 L 539.70278 519.43606 L 539.70278 570.479 L 57.04786 570.479 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp165)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9701 L 251 9701 L 251 9717 L 83 9717 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp166">
+<path d="M 57.04786 519.43606 L 539.70278 519.43606 L 539.70278 570.479 L 57.04786 570.479 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp166)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9719 L 185 9719 L 185 9735 L 83 9735 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp167">
+<path d="M 57.04786 519.43606 L 539.70278 519.43606 L 539.70278 570.479 L 57.04786 570.479 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp167)">
+<text fill="#990000" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9696" x="82.59375 89.921619 97.24948 104.57735">half</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#990000"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9696" x="111.90521">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9696" x="111.90521 119.23308 126.56094 133.88881 141.21668"> x = </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9696" x="148.54454">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9696" x="148.54454 155.8724">if</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#333333"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9696" x="163.20027">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9696" x="163.20027 170.52814 177.856 185.18387 192.51174 199.8396 207.16747"> even x</tspan></text>
+</g>
+<clipPath id="cp168">
+<path d="M 57.04786 519.43606 L 539.70278 519.43606 L 539.70278 570.479 L 57.04786 570.479 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp168)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9696" x="214.48438"> </tspan></text>
+</g>
+<clipPath id="cp169">
+<path d="M 57.04786 519.43606 L 539.70278 519.43606 L 539.70278 570.479 L 57.04786 570.479 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp169)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9714" x="82.59375 89.921619">  </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9714" x="97.24948">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9714" x="97.24948 104.57735 111.90521 119.23308">then</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#333333"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9714" x="126.56094">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9714" x="126.56094"> </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9714" x="133.88881">&#x200b;</tspan></text>
+<text fill="#445588" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9714" x="133.88881 141.21668 148.54454 155.8724">Just</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#445588"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9714" x="163.20027">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9714" x="163.20027 170.52814 177.856 185.18387 192.51174 199.8396 207.16747 214.49533 221.8232 229.15106"> (x `div` </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9714" x="236.47893">&#x200b;</tspan></text>
+<text fill="#008080" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9714" x="236.47893">2</tspan></text>
+<text fill="#008080" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9714" x="243.8068">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9714" x="243.8068">)</tspan></text>
+</g>
+<clipPath id="cp170">
+<path d="M 57.04786 519.43606 L 539.70278 519.43606 L 539.70278 570.479 L 57.04786 570.479 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp170)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9714" x="251.125"> </tspan></text>
+</g>
+<clipPath id="cp171">
+<path d="M 57.04786 519.43606 L 539.70278 519.43606 L 539.70278 570.479 L 57.04786 570.479 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp171)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9732" x="82.59375 89.921619">  </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9732" x="97.24948">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9732" x="97.24948 104.57735 111.90521 119.23308">else</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#333333"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9732" x="126.56094">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9732" x="126.56094"> </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9732" x="133.88881">&#x200b;</tspan></text>
+<text fill="#445588" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9732" x="133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856">Nothing</tspan></text>
+</g>
+<clipPath id="cp172">
+<path d="M 57.04786 519.43606 L 539.70278 519.43606 L 539.70278 570.479 L 57.04786 570.479 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp172)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="TimesNewRomanPSMT"><tspan y="9732" x="185.17188"> </tspan></text>
+</g>
+<clipPath id="cp173">
+<path d="M 0 0 L 596 0 L 596 842.9575 L 0 842.9575 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp173)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9760" x="75.59375"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9782" x="75.59375 84.48975 88.93775 96.93775 104.041759 111.14576 115.14576 129.36977 136.47377 144.47377 152.47377 159.57778 163.57778 168.02577 174.24977 178.24977 185.35378 189.35378 203.57778 211.57778 219.57778 226.68178 234.68178 238.68178 250.23378 257.33778 261.33778 268.44178 275.54579 283.54579 287.54579 295.54579 303.54579 307.54579 311.99378 319.99378 327.09779 331.09779 336.42579 344.42579 348.87379 353.32179 361.32179 372.87379 377.32179 385.32179 393.32179 397.32179 408.87379 413.32179 417.76979 425.76979 429.76979 434.21778 442.21778 449.32179 453.32179 461.32179 468.42579 472.87379 478.20179 482.20179 487.5298 495.5298 503.5298 510.6338 515.0818 519.5298 527.5298 535.5298">Since Maybe is a Monad we can do the following with the half function:</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9782" x="539.9219"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9804" x="75.59375"> </tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 76 9810 L 719 9810 L 719 9860 L 76 9860 Z " fill="#444444"/>
+</g>
+<clipPath id="cp174">
+<path d="M 57.04786 620.0205 L 539.70278 620.0205 L 539.70278 657.55178 L 57.04786 657.55178 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp174)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9817 L 346 9817 L 346 9833 L 83 9833 Z " fill="#444444"/>
+</g>
+<clipPath id="cp175">
+<path d="M 57.04786 620.0205 L 539.70278 620.0205 L 539.70278 657.55178 L 57.04786 657.55178 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp175)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9835 L 134 9835 L 134 9851 L 83 9851 Z " fill="#444444"/>
+</g>
+<clipPath id="cp176">
+<path d="M 57.04786 620.0205 L 539.70278 620.0205 L 539.70278 657.55178 L 57.04786 657.55178 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp176)">
+<text fill="#dddddd" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9830" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308 126.56094 133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856 185.18387 192.51174 199.8396 207.16747 214.49533 221.8232 229.15106 236.47893 243.8068 251.13466 258.46253 265.7904 273.11827 280.4461 287.774 295.10188 302.42973 309.75758 317.08546 324.41334 331.74119 339.06904">&#x003e; Just 20 &#x003e;&#x003e;= half &#x003e;&#x003e;= half &#x003e;&#x003e;= half</tspan></text>
+</g>
+<clipPath id="cp177">
+<path d="M 57.04786 620.0205 L 539.70278 620.0205 L 539.70278 657.55178 L 57.04786 657.55178 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp177)">
+<text fill="#dddddd" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9830" x="346.39064"> </tspan></text>
+</g>
+<clipPath id="cp178">
+<path d="M 57.04786 620.0205 L 539.70278 620.0205 L 539.70278 657.55178 L 57.04786 657.55178 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp178)">
+<text fill="#dddddd" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9848" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308 126.56094">Nothing</tspan></text>
+</g>
+<clipPath id="cp179">
+<path d="M 57.04786 620.0205 L 539.70278 620.0205 L 539.70278 657.55178 L 57.04786 657.55178 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp179)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="TimesNewRomanPSMT"><tspan y="9848" x="133.875"> </tspan></text>
+</g>
+<clipPath id="cp180">
+<path d="M 0 0 L 596 0 L 596 842.9575 L 0 842.9575 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp180)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9876" x="75.59375"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9898" x="75.59375 87.14575 94.249759 100.473758 108.473758 115.57776 120.02576 124.473758 128.47376 135.57776 140.02576 146.24976 154.24976 158.24976 166.24976 171.57776 179.57776 187.57776 192.02576 200.02576 207.12976 213.35376 217.35376 225.35376 231.57776 235.57776 247.12976 251.57776 256.02577 264.02577 268.02577 274.24977 282.24977 294.69776 301.80177 305.80177 312.02577 320.02577 328.02577 332.47377 339.57777 346.68177 351.12977 355.57777 362.68177 369.78578 374.23377 378.23377 384.45777 392.45777 400.45777 407.56178 412.88978 416.88978 422.21778 430.21778 435.54579 439.54579 451.99378 459.99378 467.99378 475.09779 483.09779 489.32179 493.32179 497.32179 504.42579 511.5298 515.9778 520.4258 527.5298 535.5298 539.5298 547.5298 555.5298 559.5298 567.5298 575.5298 579.9778 587.0818 591.5298 595.9778 603.9778 611.9778 615.9778 619.9778 628.8738 636.8738 642.2018 646.2018 653.3058 661.3058 668.4098 680.8578 688.8578 693.3058">Haskell also provides us with some syntactical sugar for monads, called do notation. For example</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9898" x="700.34378"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9920" x="75.59375 83.59375 89.81775 94.26575 102.26575 110.26575 114.26575 118.713748 126.713748 133.81775 137.81775 143.14575 154.69776 158.69776 172.92176 180.92176 188.92176 196.02576 204.02576 208.02576 219.57776 226.68177 230.68177 237.78577 244.88977 252.88977 256.88978 263.99378 271.99378 279.09779 283.54579 291.54579 295.54579 300.87379 308.87379 316.87379 323.97779 328.42579 332.87379 340.87379 348.87379 355.09779 359.09779 370.64979 375.09779 379.54579 387.54579 391.54579 395.99378 403.99378 411.09779 415.09779 424.12178 433.14576 442.16975 446.16975 454.16975 459.49775 463.49775 471.49775 479.49775 483.49775 491.49775 499.49775 503.94575 511.04975 515.49777 519.94577 527.94577 535.94577">using the IO Monad we can chain functions with the &#x003e;&#x003e;= or do notation:</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9920" x="540.34378"> </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="9942" x="75.59375"> </tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 76 9948 L 719 9948 L 719 9980 L 76 9980 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp181">
+<path d="M 57.04786 723.6074 L 539.70278 723.6074 L 539.70278 747.62747 L 57.04786 747.62747 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp181)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 9955 L 324 9955 L 324 9971 L 83 9971 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp182">
+<path d="M 57.04786 723.6074 L 539.70278 723.6074 L 539.70278 747.62747 L 57.04786 747.62747 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp182)">
+<text fill="#990000" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="9968" x="82.59375 89.921619 97.24948 104.57735 111.90521 119.23308 126.56094">getLine</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#990000"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="9968" x="133.88881">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="9968" x="133.88881 141.21668 148.54454 155.8724 163.20027 170.52814 177.856 185.18387 192.51174 199.8396 207.16747 214.49533 221.8232 229.15106 236.47893 243.8068 251.13466 258.46253 265.7904 273.11827 280.4461 287.774 295.10188 302.42973 309.75758 317.08546"> &#x003e;&#x003e;= readFile &#x003e;&#x003e;= putStrLn</tspan></text>
+</g>
+<clipPath id="cp183">
+<path d="M 57.04786 723.6074 L 539.70278 723.6074 L 539.70278 747.62747 L 57.04786 747.62747 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp183)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="TimesNewRomanPSMT"><tspan y="9968" x="324.40626"> </tspan></text>
+</g>
+<clipPath id="cp184">
+<path d="M 0 0 L 596 0 L 596 842.9575 L 0 842.9575 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp184)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="TimesNewRomanPSMT"><tspan y="9993" x="75.59375"> </tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 76 9998 L 719 9998 L 719 10030 L 76 10030 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp185">
+<path d="M 57.04786 761.1387 L 539.70278 761.1387 L 539.70278 785.1587 L 57.04786 785.1587 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp185)">
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 83 10005 L 141 10005 L 141 10021 L 83 10021 Z " fill="#f8f8f8"/>
+</g>
+<clipPath id="cp186">
+<path d="M 57.04786 761.1387 L 539.70278 761.1387 L 539.70278 785.1587 L 57.04786 785.1587 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp186)">
+<text fill="#990000" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="10018" x="82.59375 89.921619 97.24948">foo</tspan></text>
+<path transform="matrix(.7506297,0,0,.7506297,0,-6743.657)" d="M 0 0 L 0 0 L 0 0 L 0 0 Z " fill="#990000"/>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="10018" x="104.57735">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="10018" x="104.57735 111.90521 119.23308"> = </tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Gautami"><tspan y="10018" x="126.56094">&#x200b;</tspan></text>
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas" font-weight="bold"><tspan y="10018" x="126.56094 133.88881">do</tspan></text>
+</g>
+<clipPath id="cp187">
+<path d="M 57.04786 761.1387 L 539.70278 761.1387 L 539.70278 785.1587 L 57.04786 785.1587 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp187)">
+<text fill="#333333" xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="13.33" font-family="Consolas"><tspan y="10018" x="141.20313"> </tspan></text>
+</g>
+<clipPath id="cp188">
+<path d="M 0 0 L 596 0 L 596 842.9575 L 0 842.9575 Z " fill-rule="evenodd"/>
+</clipPath>
+<g clip-path="url(#cp188)">
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPS" font-style="italic"><tspan y="10053" x="75.59375 79.59375 83.59375 87.59375 91.59375 95.59375 99.59375 103.59375 107.59375 111.59375 115.59375 119.59375 123.59375">             </tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 -.18765743 .7506297 0 -6743.657)" font-size="16" font-family="Gautami"><tspan y="10053" x="2640.8438">&#x200b;</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="10053" x="127.59375 131.59375"> 9</tspan></text>
+<text xml:space="preserve" transform="matrix(.7506297 0 0 .7506297 0 -6743.657)" font-size="16" font-family="TimesNewRomanPSMT"><tspan y="10053" x="139.59375"> </tspan></text>
+</g>
+</g>
+</svg>
